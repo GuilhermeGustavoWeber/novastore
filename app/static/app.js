@@ -1,55 +1,71 @@
-// State management
-let cart = JSON.parse(localStorage.getItem("store_cart") || "[]");
+// NovaStore - State Management & Client Logic
+let cart = JSON.parse(localStorage.getItem("novastore_cart") || "[]");
+let currentCategory = "todos";
+let currentSearch = "";
 
 function saveCart() {
-  localStorage.setItem("store_cart", JSON.stringify(cart));
-  updateCartUI();
+  localStorage.setItem("novastore_cart", JSON.stringify(cart));
+  renderCartUI();
 }
 
-function updateCartUI() {
+function renderCartUI() {
   const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const cartCountEl = document.getElementById("cartCount");
-  if (cartCountEl) {
-    cartCountEl.textContent = totalCount;
+  const badgeEl = document.getElementById("cartBadge");
+  if (badgeEl) {
+    badgeEl.textContent = totalCount;
   }
 
-  const cartList = document.getElementById("cartItemsList");
-  const cartTotalVal = document.getElementById("cartTotalVal");
-  const checkoutBtn = document.getElementById("proceedToCheckoutBtn");
+  const listEl = document.getElementById("drawerCartList");
+  const totalEl = document.getElementById("drawerTotal");
+  const checkoutBtn = document.getElementById("btnGoToCheckout");
 
-  if (!cartList) return;
+  if (!listEl) return;
 
   if (cart.length === 0) {
-    cartList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">Seu carrinho esta vazio.</p>';
-    if (cartTotalVal) cartTotalVal.textContent = "R$ 0,00";
+    listEl.innerHTML = `
+      <div style="text-align: center; color: var(--text-dim); padding: 4rem 1rem;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="margin-bottom: 1rem; opacity: 0.5;">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <p style="font-weight: 600; color: var(--text-muted);">Seu carrinho esta vazio.</p>
+        <p style="font-size: 0.82rem; margin-top: 0.25rem;">Adicione itens da loja para continuar.</p>
+      </div>
+    `;
+    if (totalEl) totalEl.textContent = "R$ 0,00";
     if (checkoutBtn) checkoutBtn.disabled = true;
     return;
   }
 
   let total = 0;
-  cartList.innerHTML = cart
+  listEl.innerHTML = cart
     .map((item, idx) => {
       const subtotal = item.price * item.quantity;
       total += subtotal;
       return `
-        <div class="cart-row">
-          <div class="cart-row-info">
-            <div class="cart-row-name">${item.name}</div>
-            <div class="cart-row-price">R$ ${item.price.toFixed(2).replace(".", ",")} un.</div>
+        <div class="cart-item">
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <div class="item-price">R$ ${item.price.toFixed(2).replace(".", ",")}</div>
           </div>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="changeQty(${idx}, -1)">-</button>
-            <span>${item.quantity}</span>
-            <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+          <div class="item-controls">
+            <button class="qty-btn" onclick="updateQty(${idx}, -1)">&minus;</button>
+            <span class="qty-display">${item.quantity}</span>
+            <button class="qty-btn" onclick="updateQty(${idx}, 1)">&plus;</button>
           </div>
-          <button class="remove-btn" onclick="removeItem(${idx})">Remover</button>
+          <button class="btn-remove" title="Remover item" onclick="deleteItem(${idx})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
         </div>
       `;
     })
     .join("");
 
-  if (cartTotalVal) {
-    cartTotalVal.textContent = `R$ ${total.toFixed(2).replace(".", ",")}`;
+  if (totalEl) {
+    totalEl.textContent = `R$ ${total.toFixed(2).replace(".", ",")}`;
   }
   if (checkoutBtn) {
     checkoutBtn.disabled = false;
@@ -64,10 +80,10 @@ function addToCart(id, name, price) {
     cart.push({ id, name, price, quantity: 1 });
   }
   saveCart();
-  showToast(`"${name}" adicionado ao carrinho.`);
+  showToast(`Item "${name}" adicionado ao carrinho.`);
 }
 
-function changeQty(index, delta) {
+function updateQty(index, delta) {
   if (cart[index]) {
     cart[index].quantity += delta;
     if (cart[index].quantity <= 0) {
@@ -77,73 +93,87 @@ function changeQty(index, delta) {
   }
 }
 
-function removeItem(index) {
+function deleteItem(index) {
   if (cart[index]) {
+    const name = cart[index].name;
     cart.splice(index, 1);
     saveCart();
+    showToast(`"${name}" removido.`);
   }
 }
 
-function clearCart() {
-  cart = [];
-  saveCart();
+// Drawer Controls
+function openDrawer() {
+  document.getElementById("cartDrawer").classList.add("active");
+  renderCartUI();
 }
 
-// Modals
-function openCart() {
-  document.getElementById("cartModal").classList.add("active");
-  updateCartUI();
+function closeDrawer() {
+  document.getElementById("cartDrawer").classList.remove("active");
 }
 
-function closeCart() {
-  document.getElementById("cartModal").classList.remove("active");
+function handleBackdropClick(event) {
+  if (event.target.id === "cartDrawer") {
+    closeDrawer();
+  }
 }
 
-function openCheckout() {
-  closeCart();
+// Modal Checkout Controls
+function openCheckoutModal() {
+  closeDrawer();
   const summaryEl = document.getElementById("checkoutSummary");
   let total = 0;
-  let summaryHtml = '<ul style="list-style: none; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">';
+  let itemsHtml = '<div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">';
+  
   cart.forEach((i) => {
     const sub = i.price * i.quantity;
     total += sub;
-    summaryHtml += `<li style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
-      <span>${i.name} (x${i.quantity})</span>
-      <span>R$ ${sub.toFixed(2).replace(".", ",")}</span>
-    </li>`;
+    itemsHtml += `
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="color: var(--text-muted);">${i.name} &times; ${i.quantity}</span>
+        <span style="font-weight: 600;">R$ ${sub.toFixed(2).replace(".", ",")}</span>
+      </div>
+    `;
   });
-  summaryHtml += `</ul><div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:1rem;">
-    <span>Total:</span>
-    <span style="color:var(--accent);">R$ ${total.toFixed(2).replace(".", ",")}</span>
+
+  itemsHtml += `
+    <div style="display: flex; justify-content: space-between; font-size: 1rem; font-weight: 800; border-top: 1px solid var(--border-subtle); padding-top: 0.6rem; margin-top: 0.6rem;">
+      <span>Total com frete incluso:</span>
+      <span style="color: var(--primary);">R$ ${total.toFixed(2).replace(".", ",")}</span>
+    </div>
   </div>`;
 
-  summaryEl.innerHTML = summaryHtml;
+  summaryEl.innerHTML = itemsHtml;
   document.getElementById("checkoutModal").classList.add("active");
 }
 
-function closeCheckout() {
+function closeCheckoutModal() {
   document.getElementById("checkoutModal").classList.remove("active");
 }
 
-// Toast
-function showToast(msg) {
-  const toast = document.getElementById("toast");
-  toast.textContent = msg;
-  toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+// Filtering & Live Search
+function filterCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll(".chip-btn").forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyCardFilters();
 }
 
-// Filter Categories
-function filterCategory(category, btnElement) {
-  document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-  btnElement.classList.add("active");
+function handleSearch(query) {
+  currentSearch = query.trim().toLowerCase();
+  applyCardFilters();
+}
 
-  const cards = document.querySelectorAll(".product-card");
+function applyCardFilters() {
+  const cards = document.querySelectorAll(".card");
   cards.forEach((card) => {
-    const c = card.getAttribute("data-category");
-    if (category === "todos" || c === category) {
+    const cardCat = card.getAttribute("data-category");
+    const cardTitle = card.getAttribute("data-title");
+
+    const matchesCategory = currentCategory === "todos" || cardCat === currentCategory;
+    const matchesSearch = !currentSearch || cardTitle.includes(currentSearch);
+
+    if (matchesCategory && matchesSearch) {
       card.style.display = "flex";
     } else {
       card.style.display = "none";
@@ -151,12 +181,27 @@ function filterCategory(category, btnElement) {
   });
 }
 
-// Submit Order
+// Toast Feedback
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span>${msg}</span>
+  `;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
+}
+
+// Checkout Submission
 async function handleCheckout(event) {
   event.preventDefault();
   const btn = document.getElementById("submitOrderBtn");
   btn.disabled = true;
-  btn.textContent = "Processando Pedido...";
+  btn.innerHTML = `<span>Processando pagamento e estoque...</span>`;
 
   const payload = {
     customer_name: document.getElementById("custName").value.trim(),
@@ -174,21 +219,21 @@ async function handleCheckout(event) {
     });
 
     if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.detail || "Erro ao processar pedido");
+      const err = await res.json();
+      throw new Error(err.detail || "Falha na transacao");
     }
 
     const data = await res.json();
-    clearCart();
+    cart = [];
+    localStorage.removeItem("novastore_cart");
     window.location.href = `/order/${data.order_id}`;
   } catch (err) {
-    alert(`Falha no checkout: ${err.message}`);
+    alert(`Erro na transacao: ${err.message}`);
     btn.disabled = false;
-    btn.textContent = "Confirmar e Pagar";
+    btn.innerHTML = `<span>Efetivar Pedido</span>`;
   }
 }
 
-// Init
 document.addEventListener("DOMContentLoaded", () => {
-  updateCartUI();
+  renderCartUI();
 });

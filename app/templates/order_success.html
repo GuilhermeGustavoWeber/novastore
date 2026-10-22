@@ -3,77 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pedido Confirmado - NovaStore</title>
+  <title>Pedido Confirmado - NovaStore Dev Gear</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
   <header class="navbar">
-    <div class="logo-area">
-      <span class="brand-title">NovaStore</span>
-      <span class="brand-badge">Dev Gear</span>
-    </div>
-    <a href="/" class="cart-btn" style="text-decoration: none;">Voltar a Loja</a>
+    <a href="/" class="logo-wrap">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span class="logo-text">NovaStore</span>
+      <span class="badge-pill">Dev Edition</span>
+    </a>
+    <a href="/" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem;">
+      <span>Retornar a Vitrine</span>
+    </a>
   </header>
 
-  <main class="container" style="max-width: 700px;">
-    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 2rem; margin-top: 2rem;">
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="display: inline-block; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 700; margin-bottom: 1rem;">
-          Status: {{ order.status }}
+  <main class="container" style="max-width: 760px; padding-top: 3.5rem;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2.5rem; box-shadow: var(--shadow-card); backdrop-filter: blur(12px);">
+      
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 50%; color: var(--success); margin-bottom: 1.25rem;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
         </div>
-        <h1 style="font-size: 1.75rem; font-weight: 800;">Pedido Recebido com Sucesso!</h1>
-        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Codigo de Rastreio do Pedido: <strong style="color: var(--accent);">{{ order.order_id }}</strong></p>
+        <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem;">Transacao Aprovada</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Identificador do Pedido: <strong style="color: var(--primary); font-family: monospace; font-size: 1.05rem;">{{ order.order_id }}</strong>
+        </p>
       </div>
 
-      <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Dados do Cliente</h3>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Cliente:</strong> {{ order.customer_name }}</p>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>E-mail:</strong> {{ order.customer_email }}</p>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Endereco:</strong> {{ order.customer_address }}</p>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Metodo de Pagamento:</strong> {{ order.payment_method|upper }}</p>
-        <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Data:</strong> {{ order.created_at }}</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 2rem;">
+        <div>
+          <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Destinatario</span>
+          <p style="font-size: 0.95rem; font-weight: 600; margin-top: 0.2rem;">{{ order.customer_name }}</p>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">{{ order.customer_email }}</p>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Local de Entrega</span>
+          <p style="font-size: 0.9rem; font-weight: 600; margin-top: 0.2rem;">{{ order.customer_address }}</p>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Forma & Data</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-top: 0.2rem;">{{ order.payment_method | upper }}</p>
+          <p style="font-size: 0.82rem; color: var(--text-dim);">{{ order.created_at }}</p>
+        </div>
       </div>
 
-      <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Itens Adquiridos</h3>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-          <thead>
-            <tr style="border-bottom: 1px solid #334155; text-align: left; color: var(--text-secondary);">
-              <th style="padding-bottom: 0.5rem;">Produto</th>
-              <th style="padding-bottom: 0.5rem; text-align: center;">Qtd</th>
-              <th style="padding-bottom: 0.5rem; text-align: right;">Unitario</th>
-              <th style="padding-bottom: 0.5rem; text-align: right;">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in order.items %}
-            <tr style="border-bottom: 1px solid #1e293b;">
-              <td style="padding: 0.75rem 0;">{{ item.product_name }}</td>
-              <td style="padding: 0.75rem 0; text-align: center;">{{ item.quantity }}</td>
-              <td style="padding: 0.75rem 0; text-align: right;">R$ {{ "%.2f"|format(item.unit_price)|replace(".", ",") }}</td>
-              <td style="padding: 0.75rem 0; text-align: right; color: var(--accent);">R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div style="margin-bottom: 2rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">Itens do Pedido</h3>
+        <div style="border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--border-subtle); text-align: left; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase;">
+                <th style="padding: 0.75rem 1rem;">Produto</th>
+                <th style="padding: 0.75rem 1rem; text-align: center;">Qtd</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Unitario</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.items %}
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 0.85rem 1rem; font-weight: 600;">{{ item.product_name }}</td>
+                <td style="padding: 0.85rem 1rem; text-align: center; color: var(--text-muted);">{{ item.quantity }}</td>
+                <td style="padding: 0.85rem 1rem; text-align: right; color: var(--text-muted);">R$ {{ "%.2f"|format(item.unit_price)|replace(".", ",") }}</td>
+                <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700; color: #fff;">R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid var(--border-color); padding-top: 1.25rem; font-size: 1.25rem; font-weight: 800;">
-        <span>Total Pago:</span>
-        <span style="color: #38bdf8;">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; margin-bottom: 2rem;">
+        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Total Liquidado:</span>
+        <span style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
       </div>
 
-      <div style="margin-top: 2rem; text-align: center;">
-        <a href="/" class="checkout-btn" style="display: inline-block; text-decoration: none; max-width: 250px;">
-          Voltar as Compras
+      <div style="text-align: center;">
+        <a href="/" class="btn-primary" style="display: inline-flex; text-decoration: none; padding: 0.8rem 2rem; font-size: 0.95rem;">
+          <span>Continuar Comprando</span>
         </a>
       </div>
     </div>
   </main>
 
   <footer>
-    <p>NovaStore &copy; 2026 - Transacao registrada localmente no banco de dados SQLite.</p>
+    <p>NovaStore Engine &copy; 2026 - Registro gravado na tabela `orders` do SQLite local.</p>
   </footer>
 
 </body>

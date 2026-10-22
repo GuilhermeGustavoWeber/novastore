@@ -3,134 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NovaStore - Setup & Dev Gear</title>
+  <title>NovaStore - Engenharia de Setups & Hardware Dev</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
   <!-- Top Navigation -->
   <header class="navbar">
-    <div class="logo-area">
-      <span class="brand-title">NovaStore</span>
-      <span class="brand-badge">Dev Gear</span>
-    </div>
-    <button class="cart-btn" onclick="openCart()">
-      <span>Carrinho</span>
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </header>
-
-  <!-- Main Content -->
-  <main class="container">
-    <section class="hero">
-      <h1>Equipamentos para Alta Performance</h1>
-      <p>Hardware, ergonomia e perifericos selecionados para engenharia de software.</p>
-    </section>
-
-    <!-- Category Filters -->
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterCategory('todos', this)">Todos</button>
-      {% for cat in categories %}
-      <button class="filter-btn" onclick="filterCategory('{{ cat }}', this)">{{ cat }}</button>
-      {% endfor %}
-    </div>
-
-    <!-- Products Grid -->
-    <div class="products-grid">
-      {% for p in products %}
-      <div class="product-card" data-category="{{ p.category }}">
-        <div>
-          <div class="card-header">
-            <span class="card-category">{{ p.category }}</span>
-            {% if p.badge %}
-            <span class="card-badge">{{ p.badge }}</span>
-            {% endif %}
-          </div>
-          <h2 class="product-title">{{ p.name }}</h2>
-          <p class="product-desc">{{ p.description }}</p>
-        </div>
-        <div class="card-footer">
-          <div class="price-box">
-            <span class="price-label">Preco a vista</span>
-            <span class="price-val">R$ {{ "%.2f"|format(p.price)|replace(".", ",") }}</span>
-          </div>
-          <button class="add-btn" onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">
-            Adicionar
-          </button>
-        </div>
+    <a href="/" class="logo-wrap">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
       </div>
-      {% endfor %}
-    </div>
-  </main>
+      <span class="logo-text">NovaStore</span>
+      <span class="badge-pill">Dev Edition</span>
+    </a>
 
-  <!-- Cart Modal -->
-  <div class="modal-overlay" id="cartModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Seu Carrinho</h2>
-        <button class="close-btn" onclick="closeCart()">&times;</button>
-      </div>
-      <div class="cart-items" id="cartItemsList">
-        <!-- Rendered dynamically -->
-      </div>
-      <div class="cart-total-bar">
-        <span>Total Estimado:</span>
-        <span id="cartTotalVal">R$ 0,00</span>
-      </div>
-      <button class="checkout-btn" id="proceedToCheckoutBtn" onclick="openCheckout()">
-        Finalizar Pedido
+    <div class="nav-actions">
+      <button class="cart-toggle-btn" onclick="openDrawer()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span>Carrinho</span>
+        <span class="cart-badge" id="cartBadge">0</span>
       </button>
     </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-tag">Ambiente de Alta Performance</div>
+      <h1>Hardware e ergonomia desenhados para <span>engenheiros de software</span></h1>
+      <p>Perifericos selecionados com foco em precisao tatil, durabilidade e produtividade extrema para sua estacao de trabalho.</p>
+      
+      <div class="hero-features">
+        <div class="hero-feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Garantia de 12 meses</span>
+        </div>
+        <div class="hero-feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+          <span>Despacho imediato</span>
+        </div>
+        <div class="hero-feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Testado e homologado</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+      <div class="category-chips">
+        <button class="chip-btn active" onclick="filterCategory('todos', this)">Todos</button>
+        {% for cat in categories %}
+        <button class="chip-btn" onclick="filterCategory('{{ cat }}', this)">{{ cat }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input 
+          type="text" 
+          class="search-input" 
+          id="searchInput" 
+          placeholder="Buscar produto por nome..." 
+          oninput="handleSearch(this.value)"
+        >
+      </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-grid" id="productsGrid">
+      {% for p in products %}
+      <article class="card" data-category="{{ p.category }}" data-title="{{ p.name | lower }}">
+        <div>
+          <div class="card-top">
+            <span class="category-tag">{{ p.category }}</span>
+            {% if p.badge %}
+            <span class="status-badge">{{ p.badge }}</span>
+            {% endif %}
+          </div>
+
+          <div class="card-visual">
+            {% if 'Teclado' in p.name %}
+            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+            {% elif 'Mouse' in p.name %}
+            <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="9"/></svg>
+            {% elif 'Headset' in p.name %}
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            {% elif 'Suporte' in p.name %}
+            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            {% elif 'Dock' in p.name %}
+            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+            {% else %}
+            <svg viewBox="0 0 24 24" fill="none"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            {% endif %}
+          </div>
+
+          <h2 class="card-title">{{ p.name }}</h2>
+          <p class="card-desc">{{ p.description }}</p>
+        </div>
+
+        <div class="card-bottom">
+          <div class="price-container">
+            <span class="price-sub">Valor a vista</span>
+            <span class="price-value">R$ {{ "%.2f"|format(p.price)|replace(".", ",") }}</span>
+          </div>
+          <button class="btn-primary" onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">
+            <svg viewBox="0 0 24 24" fill="none">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Adicionar</span>
+          </button>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+
+  </main>
+
+  <!-- Off-Canvas Cart Drawer -->
+  <div class="drawer-backdrop" id="cartDrawer" onclick="handleBackdropClick(event)">
+    <aside class="drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span>Seu Carrinho</span>
+        </div>
+        <button class="btn-close" onclick="closeDrawer()">&times;</button>
+      </div>
+
+      <div class="drawer-body" id="drawerCartList">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+
+      <div class="drawer-footer">
+        <div class="subtotal-row">
+          <span class="subtotal-label">Subtotal dos Itens:</span>
+          <span class="subtotal-value" id="drawerTotal">R$ 0,00</span>
+        </div>
+        <button class="btn-checkout" id="btnGoToCheckout" onclick="openCheckoutModal()">
+          <span>Avancar para Checkout</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
   </div>
 
   <!-- Checkout Modal -->
   <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Checkout Seguro</h2>
-        <button class="close-btn" onclick="closeCheckout()">&times;</button>
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 style="font-size: 1.15rem; font-weight: 700;">Finalizacao de Compra</h2>
+        <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
       </div>
 
-      <div id="checkoutSummary"></div>
+      <div class="modal-body">
+        <div id="checkoutSummary" style="margin-bottom: 1.25rem;"></div>
 
-      <form id="checkoutForm" onsubmit="handleCheckout(event)">
-        <div class="form-group">
-          <label for="custName">Nome Completo</label>
-          <input type="text" id="custName" class="form-control" placeholder="Guilherme Weber" required minlength="2">
-        </div>
+        <form id="checkoutForm" onsubmit="handleCheckout(event)">
+          <div class="form-field">
+            <label class="form-label" for="custName">Nome Completo</label>
+            <input type="text" id="custName" class="form-input" placeholder="Guilherme Weber" required minlength="2">
+          </div>
 
-        <div class="form-group">
-          <label for="custEmail">E-mail</label>
-          <input type="email" id="custEmail" class="form-control" placeholder="exemplo@dev.com" required>
-        </div>
+          <div class="form-field">
+            <label class="form-label" for="custEmail">E-mail Profissional</label>
+            <input type="email" id="custEmail" class="form-input" placeholder="guilherme@dev.com" required>
+          </div>
 
-        <div class="form-group">
-          <label for="custAddress">Endereco de Entrega</label>
-          <input type="text" id="custAddress" class="form-control" placeholder="Rua / Bairro / Cidade - UF" required minlength="5">
-        </div>
+          <div class="form-field">
+            <label class="form-label" for="custAddress">Endereco de Destino</label>
+            <input type="text" id="custAddress" class="form-input" placeholder="Av. Principal, 1000 - Curitiba/PR" required minlength="5">
+          </div>
 
-        <div class="form-group">
-          <label for="custPayment">Forma de Pagamento</label>
-          <select id="custPayment" class="form-control" required>
-            <option value="pix">PIX (Aprovacao Imediata)</option>
-            <option value="cartao">Cartao de Credito</option>
-            <option value="boleto">Boleto Bancario</option>
-          </select>
-        </div>
+          <div class="form-field">
+            <label class="form-label" for="custPayment">Metodo de Pagamento</label>
+            <select id="custPayment" class="form-select" required>
+              <option value="pix">PIX (Liquidacao Instantanea - 5% OFF)</option>
+              <option value="cartao">Cartao de Credito (Ate 12x)</option>
+              <option value="boleto">Boleto Bancario</option>
+            </select>
+          </div>
 
-        <button type="submit" class="checkout-btn" id="submitOrderBtn" style="margin-top: 1rem;">
-          Confirmar e Pagar
-        </button>
-      </form>
+          <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 1.5rem;">
+            <span>Efetivar Pedido</span>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
   <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
+  <div class="toast-notice" id="toast"></div>
 
   <!-- Footer -->
   <footer>
-    <p>NovaStore &copy; 2026 - Desenvolvido com FastAPI, SQLite & Vanilla JS no workspace de desenvolvimento.</p>
+    <p>NovaStore Engine &copy; 2026 - Desenvolvido para Guilherme Gustavo Weber. Arquitetura FastAPI + SQLite nativo.</p>
   </footer>
 
   <script src="/static/app.js"></script>
