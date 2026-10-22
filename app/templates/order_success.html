@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido Confirmado - NovaStore</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo-area">
+      <span class="brand-title">NovaStore</span>
+      <span class="brand-badge">Dev Gear</span>
+    </div>
+    <a href="/" class="cart-btn" style="text-decoration: none;">Voltar a Loja</a>
+  </header>
+
+  <main class="container" style="max-width: 700px;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 2rem; margin-top: 2rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="display: inline-block; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 700; margin-bottom: 1rem;">
+          Status: {{ order.status }}
+        </div>
+        <h1 style="font-size: 1.75rem; font-weight: 800;">Pedido Recebido com Sucesso!</h1>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Codigo de Rastreio do Pedido: <strong style="color: var(--accent);">{{ order.order_id }}</strong></p>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Dados do Cliente</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Cliente:</strong> {{ order.customer_name }}</p>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>E-mail:</strong> {{ order.customer_email }}</p>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Endereco:</strong> {{ order.customer_address }}</p>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem;"><strong>Metodo de Pagamento:</strong> {{ order.payment_method|upper }}</p>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Data:</strong> {{ order.created_at }}</p>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Itens Adquiridos</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid #334155; text-align: left; color: var(--text-secondary);">
+              <th style="padding-bottom: 0.5rem;">Produto</th>
+              <th style="padding-bottom: 0.5rem; text-align: center;">Qtd</th>
+              <th style="padding-bottom: 0.5rem; text-align: right;">Unitario</th>
+              <th style="padding-bottom: 0.5rem; text-align: right;">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.items %}
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 0.75rem 0;">{{ item.product_name }}</td>
+              <td style="padding: 0.75rem 0; text-align: center;">{{ item.quantity }}</td>
+              <td style="padding: 0.75rem 0; text-align: right;">R$ {{ "%.2f"|format(item.unit_price)|replace(".", ",") }}</td>
+              <td style="padding: 0.75rem 0; text-align: right; color: var(--accent);">R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid var(--border-color); padding-top: 1.25rem; font-size: 1.25rem; font-weight: 800;">
+        <span>Total Pago:</span>
+        <span style="color: #38bdf8;">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <a href="/" class="checkout-btn" style="display: inline-block; text-decoration: none; max-width: 250px;">
+          Voltar as Compras
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>NovaStore &copy; 2026 - Transacao registrada localmente no banco de dados SQLite.</p>
+  </footer>
+
+</body>
+</html>

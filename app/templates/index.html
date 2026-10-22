@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaStore - Setup & Dev Gear</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="logo-area">
+      <span class="brand-title">NovaStore</span>
+      <span class="brand-badge">Dev Gear</span>
+    </div>
+    <button class="cart-btn" onclick="openCart()">
+      <span>Carrinho</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <section class="hero">
+      <h1>Equipamentos para Alta Performance</h1>
+      <p>Hardware, ergonomia e perifericos selecionados para engenharia de software.</p>
+    </section>
+
+    <!-- Category Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCategory('todos', this)">Todos</button>
+      {% for cat in categories %}
+      <button class="filter-btn" onclick="filterCategory('{{ cat }}', this)">{{ cat }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      {% for p in products %}
+      <div class="product-card" data-category="{{ p.category }}">
+        <div>
+          <div class="card-header">
+            <span class="card-category">{{ p.category }}</span>
+            {% if p.badge %}
+            <span class="card-badge">{{ p.badge }}</span>
+            {% endif %}
+          </div>
+          <h2 class="product-title">{{ p.name }}</h2>
+          <p class="product-desc">{{ p.description }}</p>
+        </div>
+        <div class="card-footer">
+          <div class="price-box">
+            <span class="price-label">Preco a vista</span>
+            <span class="price-val">R$ {{ "%.2f"|format(p.price)|replace(".", ",") }}</span>
+          </div>
+          <button class="add-btn" onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">
+            Adicionar
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <!-- Cart Modal -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Seu Carrinho</h2>
+        <button class="close-btn" onclick="closeCart()">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItemsList">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="cart-total-bar">
+        <span>Total Estimado:</span>
+        <span id="cartTotalVal">R$ 0,00</span>
+      </div>
+      <button class="checkout-btn" id="proceedToCheckoutBtn" onclick="openCheckout()">
+        Finalizar Pedido
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Checkout Seguro</h2>
+        <button class="close-btn" onclick="closeCheckout()">&times;</button>
+      </div>
+
+      <div id="checkoutSummary"></div>
+
+      <form id="checkoutForm" onsubmit="handleCheckout(event)">
+        <div class="form-group">
+          <label for="custName">Nome Completo</label>
+          <input type="text" id="custName" class="form-control" placeholder="Guilherme Weber" required minlength="2">
+        </div>
+
+        <div class="form-group">
+          <label for="custEmail">E-mail</label>
+          <input type="email" id="custEmail" class="form-control" placeholder="exemplo@dev.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="custAddress">Endereco de Entrega</label>
+          <input type="text" id="custAddress" class="form-control" placeholder="Rua / Bairro / Cidade - UF" required minlength="5">
+        </div>
+
+        <div class="form-group">
+          <label for="custPayment">Forma de Pagamento</label>
+          <select id="custPayment" class="form-control" required>
+            <option value="pix">PIX (Aprovacao Imediata)</option>
+            <option value="cartao">Cartao de Credito</option>
+            <option value="boleto">Boleto Bancario</option>
+          </select>
+        </div>
+
+        <button type="submit" class="checkout-btn" id="submitOrderBtn" style="margin-top: 1rem;">
+          Confirmar e Pagar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Footer -->
+  <footer>
+    <p>NovaStore &copy; 2026 - Desenvolvido com FastAPI, SQLite & Vanilla JS no workspace de desenvolvimento.</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
