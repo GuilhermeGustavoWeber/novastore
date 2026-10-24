@@ -11,7 +11,7 @@ let checkoutState = {
   couponPercent: 0,
   freeShippingCoupon: false,
   shippingCost: 0,
-  shippingRegion: "Sul (PR/SC)",
+  shippingRegion: "Sudeste (SP Interior)",
   shippingDays: 2,
 };
 
@@ -250,14 +250,14 @@ function closeCheckoutModal() {
 
 async function quoteShipping() {
   const zipInput = document.getElementById("custZip");
-  const zip = zipInput ? zipInput.value.trim() : "80010-000";
+  const zip = zipInput ? zipInput.value.trim() : "13330-000";
   const subtotal = getCartSubtotal();
   try {
     const res = await fetch("/api/shipping/quote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        zip_code: zip.length >= 8 ? zip : "80010-000",
+        zip_code: zip.length >= 8 ? zip : "13330-000",
         subtotal: subtotal,
         coupon_code: checkoutState.couponCode,
       }),
