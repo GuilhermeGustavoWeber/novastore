@@ -16,17 +16,20 @@
         </svg>
       </div>
       <span class="logo-text">NovaStore</span>
-      <span class="badge-pill">Dev Edition</span>
+      <span class="badge-pill">Dev Edition v2</span>
     </a>
-    <a href="/" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem;">
-      <span>Retornar a Vitrine</span>
-    </a>
+    <div class="nav-actions">
+      <a href="/track?q={{ order.order_id }}" class="nav-link">Rastrear Status</a>
+      <a href="/" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem;">
+        <span>Retornar a Vitrine</span>
+      </a>
+    </div>
   </header>
 
-  <main class="container" style="max-width: 760px; padding-top: 3.5rem;">
+  <main class="container" style="max-width: 800px; padding-top: 3rem;">
     <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 2.5rem; box-shadow: var(--shadow-card); backdrop-filter: blur(12px);">
       
-      <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
         <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 50%; color: var(--success); margin-bottom: 1.25rem;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="20 6 9 17 4 12"/>
@@ -35,7 +38,21 @@
         <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem;">Transacao Aprovada</h1>
         <p style="color: var(--text-muted); font-size: 0.95rem;">
           Identificador do Pedido: <strong style="color: var(--primary); font-family: monospace; font-size: 1.05rem;">{{ order.order_id }}</strong>
+          &bull; Status: <span class="status-badge">{{ order.status }}</span>
         </p>
+      </div>
+
+      <!-- Status Timeline -->
+      {% set steps = ["Confirmado", "Em Separacao", "Enviado", "Entregue"] %}
+      {% set current_idx = steps.index(order.status) if order.status in steps else -1 %}
+      <div class="timeline">
+        {% for step in steps %}
+        {% set idx = loop.index0 %}
+        <div class="timeline-step {% if idx <= current_idx %}done{% endif %}">
+          <div class="timeline-dot">{{ loop.index }}</div>
+          <span class="timeline-label">{{ step }}</span>
+        </div>
+        {% endfor %}
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 2rem;">
@@ -47,33 +64,37 @@
         <div>
           <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Local de Entrega</span>
           <p style="font-size: 0.9rem; font-weight: 600; margin-top: 0.2rem;">{{ order.customer_address }}</p>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">CEP: {{ order.zip_code }}</p>
         </div>
         <div>
           <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Forma & Data</span>
-          <p style="font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-top: 0.2rem;">{{ order.payment_method | upper }}</p>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-top: 0.2rem;">
+            {{ order.payment_method | upper }}
+            {% if order.coupon_code %} &bull; Cupom {{ order.coupon_code }}{% endif %}
+          </p>
           <p style="font-size: 0.82rem; color: var(--text-dim);">{{ order.created_at }}</p>
         </div>
       </div>
 
-      <div style="margin-bottom: 2rem;">
+      <div style="margin-bottom: 1.75rem;">
         <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">Itens do Pedido</h3>
         <div style="border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+          <table class="data-table">
             <thead>
-              <tr style="background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--border-subtle); text-align: left; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase;">
-                <th style="padding: 0.75rem 1rem;">Produto</th>
-                <th style="padding: 0.75rem 1rem; text-align: center;">Qtd</th>
-                <th style="padding: 0.75rem 1rem; text-align: right;">Unitario</th>
-                <th style="padding: 0.75rem 1rem; text-align: right;">Subtotal</th>
+              <tr>
+                <th>Produto</th>
+                <th style="text-align: center;">Qtd</th>
+                <th style="text-align: right;">Unitario</th>
+                <th style="text-align: right;">Subtotal</th>
               </tr>
             </thead>
             <tbody>
               {% for item in order.items %}
-              <tr style="border-bottom: 1px solid var(--border-subtle);">
-                <td style="padding: 0.85rem 1rem; font-weight: 600;">{{ item.product_name }}</td>
-                <td style="padding: 0.85rem 1rem; text-align: center; color: var(--text-muted);">{{ item.quantity }}</td>
-                <td style="padding: 0.85rem 1rem; text-align: right; color: var(--text-muted);">R$ {{ "%.2f"|format(item.unit_price)|replace(".", ",") }}</td>
-                <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700; color: #fff;">R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}</td>
+              <tr>
+                <td style="font-weight: 600;">{{ item.product_name }}</td>
+                <td style="text-align: center; color: var(--text-muted);">{{ item.quantity }}</td>
+                <td style="text-align: right; color: var(--text-muted);">R$ {{ "%.2f"|format(item.unit_price)|replace(".", ",") }}</td>
+                <td style="text-align: right; font-weight: 700; color: #fff;">R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -81,12 +102,31 @@
         </div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; margin-bottom: 2rem;">
-        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Total Liquidado:</span>
-        <span style="font-size: 1.6rem; font-weight: 900; color: var(--primary);">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+          <span>Subtotal dos Itens:</span>
+          <span>R$ {{ "%.2f"|format(order.subtotal_amount)|replace(".", ",") }}</span>
+        </div>
+        {% if order.discount_amount > 0 %}
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--success); margin-bottom: 0.4rem;">
+          <span>Descontos Aplicados {% if order.coupon_code %}({{ order.coupon_code }}){% endif %}:</span>
+          <span>- R$ {{ "%.2f"|format(order.discount_amount)|replace(".", ",") }}</span>
+        </div>
+        {% endif %}
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+          <span>Frete e Logistica:</span>
+          <span>{% if order.shipping_cost == 0 %}Gratis{% else %}R$ {{ "%.2f"|format(order.shipping_cost)|replace(".", ",") }}{% endif %}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-subtle); padding-top: 1rem;">
+          <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Total Liquidado:</span>
+          <span style="font-size: 1.65rem; font-weight: 900; color: var(--primary);">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+        </div>
       </div>
 
-      <div style="text-align: center;">
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <a href="/track?q={{ order.order_id }}" class="btn-ghost" style="text-decoration: none; padding: 0.8rem 1.5rem;">
+          Acompanhar Entrega
+        </a>
         <a href="/" class="btn-primary" style="display: inline-flex; text-decoration: none; padding: 0.8rem 2rem; font-size: 0.95rem;">
           <span>Continuar Comprando</span>
         </a>
@@ -95,7 +135,7 @@
   </main>
 
   <footer>
-    <p>NovaStore Engine &copy; 2026 - Registro gravado na tabela `orders` do SQLite local.</p>
+    <p>NovaStore Engine v2.0 &copy; 2026 - Registro gravado na tabela `orders` do SQLite local.</p>
   </footer>
 
 </body>

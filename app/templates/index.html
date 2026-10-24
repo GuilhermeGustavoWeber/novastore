@@ -17,10 +17,23 @@
         </svg>
       </div>
       <span class="logo-text">NovaStore</span>
-      <span class="badge-pill">Dev Edition</span>
+      <span class="badge-pill">Dev Edition v2</span>
     </a>
 
     <div class="nav-actions">
+      <a href="/track" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Rastrear Pedido</span>
+      </a>
+      <a href="/admin" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>Admin</span>
+      </a>
       <button class="cart-toggle-btn" onclick="openDrawer()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"/>
@@ -56,13 +69,13 @@
             <circle cx="5.5" cy="18.5" r="2.5"/>
             <circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
-          <span>Despacho imediato</span>
+          <span>Frete gratis acima de R$ 500</span>
         </div>
         <div class="hero-feature-item">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          <span>Testado e homologado</span>
+          <span>Cupons ativos: DEV10 / SIDI20</span>
         </div>
       </div>
     </section>
@@ -76,25 +89,44 @@
         {% endfor %}
       </div>
 
-      <div class="search-box">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input 
-          type="text" 
-          class="search-input" 
-          id="searchInput" 
-          placeholder="Buscar produto por nome..." 
-          oninput="handleSearch(this.value)"
-        >
+      <div class="controls-right">
+        <select class="sort-select" id="sortSelect" onchange="handleSort(this.value)" aria-label="Ordenar catalogo">
+          <option value="default">Ordenar: Destaques</option>
+          <option value="price_asc">Menor Preco</option>
+          <option value="price_desc">Maior Preco</option>
+          <option value="rating_desc">Melhor Avaliacao</option>
+          <option value="stock_desc">Maior Estoque</option>
+          <option value="name_asc">Nome (A-Z)</option>
+        </select>
+
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input 
+            type="text" 
+            class="search-input" 
+            id="searchInput" 
+            placeholder="Buscar produto ou spec..." 
+            oninput="handleSearch(this.value)"
+          >
+        </div>
       </div>
     </section>
 
     <!-- Products Grid -->
     <section class="products-grid" id="productsGrid">
       {% for p in products %}
-      <article class="card" data-category="{{ p.category }}" data-title="{{ p.name | lower }}">
+      <article
+        class="card"
+        data-id="{{ p.id }}"
+        data-category="{{ p.category }}"
+        data-title="{{ p.name | lower }} {{ (p.specs or '') | lower }}"
+        data-price="{{ p.price }}"
+        data-rating="{{ p.avg_rating }}"
+        data-stock="{{ p.stock }}"
+      >
         <div>
           <div class="card-top">
             <span class="category-tag">{{ p.category }}</span>
@@ -103,7 +135,7 @@
             {% endif %}
           </div>
 
-          <div class="card-visual">
+          <div class="card-visual" onclick="openProductModal({{ p.id }})" style="cursor: pointer;" title="Ver especificacoes e avaliacoes">
             {% if 'Teclado' in p.name %}
             <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
             {% elif 'Mouse' in p.name %}
@@ -119,7 +151,25 @@
             {% endif %}
           </div>
 
-          <h2 class="card-title">{{ p.name }}</h2>
+          <div class="card-meta-row">
+            <span class="rating-pill" onclick="openProductModal({{ p.id }})" title="Ver avaliacoes">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span>{{ "%.1f"|format(p.avg_rating) }}</span>
+              <span class="count">({{ p.review_count }})</span>
+            </span>
+
+            {% if p.stock <= 0 %}
+            <span class="stock-pill out">Esgotado</span>
+            {% elif p.stock <= 5 %}
+            <span class="stock-pill low">Restam {{ p.stock }} un.</span>
+            {% else %}
+            <span class="stock-pill">{{ p.stock }} em estoque</span>
+            {% endif %}
+          </div>
+
+          <h2 class="card-title" onclick="openProductModal({{ p.id }})" style="cursor: pointer;">{{ p.name }}</h2>
           <p class="card-desc">{{ p.description }}</p>
         </div>
 
@@ -128,19 +178,82 @@
             <span class="price-sub">Valor a vista</span>
             <span class="price-value">R$ {{ "%.2f"|format(p.price)|replace(".", ",") }}</span>
           </div>
-          <button class="btn-primary" onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">
-            <svg viewBox="0 0 24 24" fill="none">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            <span>Adicionar</span>
-          </button>
+          <div class="card-actions">
+            <button class="btn-ghost" onclick="openProductModal({{ p.id }})" title="Especificacoes e Reviews">
+              Specs
+            </button>
+            <button
+              class="btn-primary"
+              onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})"
+              {% if p.stock <= 0 %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}
+            >
+              <svg viewBox="0 0 24 24" fill="none">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span>Adicionar</span>
+            </button>
+          </div>
         </div>
       </article>
       {% endfor %}
     </section>
 
   </main>
+
+  <!-- Product Details & Reviews Modal -->
+  <div class="modal-overlay" id="productModal" onclick="if(event.target.id==='productModal') closeProductModal()">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-head">
+        <div>
+          <span class="category-tag" id="pmCategory">Categoria</span>
+          <h2 id="pmTitle" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem;">Produto</h2>
+        </div>
+        <button class="btn-close" onclick="closeProductModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="pmDesc" style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.55;"></p>
+
+        <div style="margin-top: 1rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim);">Especificacoes Tecnicas</span>
+          <div class="specs-list" id="pmSpecs"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem; margin-bottom: 1.5rem;">
+          <div>
+            <span style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Preco Unitario</span>
+            <div id="pmPrice" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">R$ 0,00</div>
+          </div>
+          <button class="btn-primary" id="pmAddBtn">
+            <span>Adicionar ao Carrinho</span>
+          </button>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.85rem;">Avaliacoes de Engenheiros</h3>
+          <div id="pmReviewsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem;"></div>
+
+          <form id="reviewForm" onsubmit="submitProductReview(event)" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">Registrar Avaliacao Tecnica</div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.65rem; margin-bottom: 0.65rem;">
+              <input type="text" id="revAuthor" class="form-input" placeholder="Seu nome (ex: Guilherme W.)" required minlength="2">
+              <select id="revRating" class="form-select" required>
+                <option value="5">5 Estrelas - Excelente</option>
+                <option value="4">4 Estrelas - Muito Bom</option>
+                <option value="3">3 Estrelas - Regular</option>
+                <option value="2">2 Estrelas - Abaixo</option>
+                <option value="1">1 Estrela - Ruim</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 0.65rem;">
+              <input type="text" id="revComment" class="form-input" placeholder="Comentario sobre construcao, latencia ou ergonomia..." required minlength="3">
+              <button type="submit" class="btn-primary" style="white-space: nowrap;">Publicar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Off-Canvas Cart Drawer -->
   <div class="drawer-backdrop" id="cartDrawer" onclick="handleBackdropClick(event)">
@@ -178,7 +291,7 @@
 
   <!-- Checkout Modal -->
   <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width: 560px;">
       <div class="modal-head">
         <h2 style="font-size: 1.15rem; font-weight: 700;">Finalizacao de Compra</h2>
         <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
@@ -198,21 +311,41 @@
             <input type="email" id="custEmail" class="form-input" placeholder="guilherme@dev.com" required>
           </div>
 
-          <div class="form-field">
-            <label class="form-label" for="custAddress">Endereco de Destino</label>
-            <input type="text" id="custAddress" class="form-input" placeholder="Av. Principal, 1000 - Curitiba/PR" required minlength="5">
+          <div style="display: grid; grid-template-columns: 1.2fr 2fr; gap: 0.75rem;">
+            <div class="form-field">
+              <label class="form-label" for="custZip">CEP (Calculo de Frete)</label>
+              <div class="inline-input-group">
+                <input type="text" id="custZip" class="form-input" placeholder="80010-000" value="80010-000" minlength="8" maxlength="10" onblur="quoteShipping()">
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="custAddress">Endereco de Destino</label>
+              <input type="text" id="custAddress" class="form-input" placeholder="Av. Principal, 1000 - Curitiba/PR" required minlength="5">
+            </div>
           </div>
 
-          <div class="form-field">
-            <label class="form-label" for="custPayment">Metodo de Pagamento</label>
-            <select id="custPayment" class="form-select" required>
-              <option value="pix">PIX (Liquidacao Instantanea - 5% OFF)</option>
-              <option value="cartao">Cartao de Credito (Ate 12x)</option>
-              <option value="boleto">Boleto Bancario</option>
-            </select>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-field">
+              <label class="form-label" for="custPayment">Metodo de Pagamento</label>
+              <select id="custPayment" class="form-select" required onchange="refreshCheckoutTotals()">
+                <option value="pix">PIX (Instantaneo)</option>
+                <option value="cartao">Cartao de Credito (Ate 12x)</option>
+                <option value="boleto">Boleto Bancario</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="custCoupon">Cupom Promocional</label>
+              <div class="inline-input-group">
+                <input type="text" id="custCoupon" class="form-input" placeholder="Ex: DEV10 ou SIDI20" style="text-transform: uppercase;">
+                <button type="button" class="btn-ghost" onclick="applyCoupon()">Aplicar</button>
+              </div>
+            </div>
           </div>
 
-          <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 1.5rem;">
+          <div id="couponFeedback" style="font-size: 0.8rem; margin-bottom: 0.75rem; display: none;"></div>
+
+          <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 0.75rem;">
             <span>Efetivar Pedido</span>
           </button>
         </form>
@@ -225,7 +358,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>NovaStore Engine &copy; 2026 - Desenvolvido para Guilherme Gustavo Weber. Arquitetura FastAPI + SQLite nativo.</p>
+    <p>NovaStore Engine v2.0 &copy; 2026 - Desenvolvido para Guilherme Gustavo Weber. Arquitetura FastAPI + SQLite nativo.</p>
   </footer>
 
   <script src="/static/app.js"></script>

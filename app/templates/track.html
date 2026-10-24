@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rastreamento de Pedidos - NovaStore</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="/" class="logo-wrap">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span class="logo-text">NovaStore</span>
+      <span class="badge-pill">Rastreio & Historico</span>
+    </a>
+
+    <div class="nav-actions">
+      <a href="/" class="nav-link">Vitrine</a>
+      <a href="/track" class="nav-link active">Rastrear Pedido</a>
+      <a href="/admin" class="nav-link">Admin</a>
+    </div>
+  </header>
+
+  <main class="container" style="max-width: 880px;">
+    <section class="admin-panel-card">
+      <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem;">Rastreamento e Historico de Pedidos</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+        Informe o identificador do pedido (ex: <code style="color: var(--primary);">ORD-XXXX</code>) ou o e-mail utilizado na compra.
+      </p>
+
+      <form method="GET" action="/track" style="display: flex; gap: 0.75rem;">
+        <input
+          type="text"
+          name="q"
+          class="form-input"
+          value="{{ query }}"
+          placeholder="Digite o codigo ORD-... ou seu e-mail (ex: guilherme@dev.com)"
+          required
+          minlength="2"
+        >
+        <button type="submit" class="btn-primary" style="white-space: nowrap; padding: 0 1.5rem;">
+          <span>Consultar</span>
+        </button>
+      </form>
+    </section>
+
+    {% if query %}
+      {% if orders %}
+        {% set steps = ["Confirmado", "Em Separacao", "Enviado", "Entregue"] %}
+        {% for order in orders %}
+        <div class="admin-panel-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+            <div>
+              <span style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary);">{{ order.order_id }}</span>
+              <span style="color: var(--text-dim); font-size: 0.82rem; margin-left: 0.5rem;">{{ order.created_at }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="status-badge" {% if order.status == 'Cancelado' %}style="background: rgba(244,63,94,0.15); color: var(--danger); border-color: rgba(244,63,94,0.3);"{% endif %}>
+                {{ order.status }}
+              </span>
+              <a href="/order/{{ order.order_id }}" class="btn-ghost" style="text-decoration: none; padding: 0.35rem 0.75rem;">Ver Recibo</a>
+            </div>
+          </div>
+
+          {% if order.status == 'Cancelado' %}
+          <div style="margin: 1.25rem 0; padding: 0.85rem 1rem; background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.25); border-radius: var(--radius-sm); color: var(--danger); font-size: 0.88rem; font-weight: 600;">
+            Este pedido foi cancelado e o estoque dos itens foi estornado.
+          </div>
+          {% else %}
+          {% set current_idx = steps.index(order.status) if order.status in steps else 0 %}
+          <div class="timeline">
+            {% for step in steps %}
+            {% set idx = loop.index0 %}
+            <div class="timeline-step {% if idx <= current_idx %}done{% endif %}">
+              <div class="timeline-dot">{{ loop.index }}</div>
+              <span class="timeline-label">{{ step }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+            <div>
+              <strong>Cliente:</strong> {{ order.customer_name }} ({{ order.customer_email }})<br>
+              <strong>Destino:</strong> {{ order.customer_address }} - CEP {{ order.zip_code }}
+            </div>
+            <div style="text-align: right;">
+              <strong>Itens:</strong> {{ order.items | length }} produto(s)<br>
+              <strong>Total:</strong> <span style="color: var(--primary); font-weight: 800; font-size: 1rem;">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="admin-panel-card" style="text-align: center; padding: 3rem 1.5rem;">
+          <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">Nenhum pedido localizado para "{{ query }}"</p>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.4rem;">Verifique o codigo digitado ou tente buscar pelo e-mail cadastrado no checkout.</p>
+        </div>
+      {% endif %}
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>NovaStore Engine v2.0 &copy; 2026 - Rastreamento em tempo real via SQLite.</p>
+  </footer>
+
+</body>
+</html>
