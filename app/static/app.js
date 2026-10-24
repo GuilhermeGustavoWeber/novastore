@@ -1,5 +1,6 @@
-// NovaStore v2.0 - State Management & Client Logic
+// NovaStore v3.0 - State Management & Client Logic
 let cart = JSON.parse(localStorage.getItem("novastore_cart") || "[]");
+let favorites = JSON.parse(localStorage.getItem("novastore_favs") || "[]");
 let currentCategory = "todos";
 let currentSearch = "";
 let activeProductId = null;
@@ -407,10 +408,18 @@ function handleSort(mode) {
 function applyCardFilters() {
   const cards = document.querySelectorAll(".card");
   cards.forEach((card) => {
+    const cardId = parseInt(card.getAttribute("data-id") || "0", 10);
     const cardCat = card.getAttribute("data-category");
     const cardTitle = card.getAttribute("data-title");
 
-    const matchesCategory = currentCategory === "todos" || cardCat === currentCategory;
+    let matchesCategory = false;
+    if (currentCategory === "todos") {
+      matchesCategory = true;
+    } else if (currentCategory === "favoritos") {
+      matchesCategory = favorites.includes(cardId);
+    } else {
+      matchesCategory = cardCat === currentCategory;
+    }
     const matchesSearch = !currentSearch || cardTitle.includes(currentSearch);
 
     if (matchesCategory && matchesSearch) {
@@ -419,6 +428,75 @@ function applyCardFilters() {
       card.style.display = "none";
     }
   });
+}
+
+function toggleFavorite(productId, productName) {
+  const idx = favorites.indexOf(productId);
+  if (idx >= 0) {
+    favorites.splice(idx, 1);
+    showToast(`"${productName}" removido dos favoritos.`);
+  } else {
+    favorites.push(productId);
+    showToast(`"${productName}" salvo nos favoritos!`);
+  }
+  localStorage.setItem("novastore_favs", JSON.stringify(favorites));
+  syncFavoritesUI();
+  if (currentCategory === "favoritos") {
+    applyCardFilters();
+  }
+}
+
+function syncFavoritesUI() {
+  document.querySelectorAll(".fav-btn").forEach((btn) => {
+    const id = parseInt(btn.id.replace("fav-", ""), 10);
+    if (favorites.includes(id)) {
+      btn.classList.add("is-fav");
+    } else {
+      btn.classList.remove("is-fav");
+    }
+  });
+}
+
+function switchSetupKit(kitIndex, btnEl) {
+  document.querySelectorAll(".serve-tab").forEach((t) => t.classList.remove("is-active"));
+  if (btnEl) btnEl.classList.add("is-active");
+  document.querySelectorAll(".kit-scene").forEach((s, idx) => {
+    if (idx === kitIndex) {
+      s.classList.add("is-active");
+    } else {
+      s.classList.remove("is-active");
+    }
+  });
+}
+
+async function addKitBundle(productIds, kitName) {
+  try {
+    const res = await fetch("/api/products");
+    if (!res.ok) return;
+    const allProducts = await res.json();
+    let addedCount = 0;
+
+    productIds.forEach((pid) => {
+      const prod = allProducts.find((p) => p.id === pid);
+      if (prod && prod.stock > 0) {
+        const existing = cart.find((i) => i.id === prod.id);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push({ id: prod.id, name: prod.name, price: prod.price, quantity: 1 });
+        }
+        addedCount += 1;
+      }
+    });
+
+    if (addedCount > 0) {
+      saveCart();
+      openDrawer();
+      showToast(`${kitName} (${addedCount} itens) adicionado ao carrinho!`);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 // Toast Feedback
@@ -578,6 +656,7 @@ async function saveCoupon(event) {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderCartUI();
+  syncFavoritesUI();
 
   // Potadot interactive spotlight tracking on tactile cards
   document.querySelectorAll(".card").forEach((card) => {

@@ -22,6 +22,7 @@
 
     <div class="nav-actions">
       <a href="/" class="nav-link active">Vitrine</a>
+      <a href="#setupKits" class="nav-link">Kits de Setup</a>
       <a href="/track" class="nav-link">Rastrear Pedido</a>
       <a href="/admin" class="nav-link">Backoffice</a>
       <button class="cart-toggle-btn" onclick="openDrawer()">
@@ -114,6 +115,53 @@
       </div>
     </section>
 
+    <!-- Potadot Infinite Tactile Marquee Strip -->
+    <div class="marquee" aria-label="Especificacoes de Engenharia">
+      <div class="marquee-track">
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="12" x2="18" y2="12"/></svg></span>
+          Switches Tactile Lubed de Fabrica
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+          Power Delivery 100W Pass-Through
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg></span>
+          Cancelamento Ativo Hibrido -38dB
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          Polling Rate 1000Hz Ultra-Low Latency
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          Keycaps PBT Double-Shot Anti-Brilho
+        </span>
+        <!-- Duplicate track for seamless loop -->
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="12" x2="18" y2="12"/></svg></span>
+          Switches Tactile Lubed de Fabrica
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+          Power Delivery 100W Pass-Through
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg></span>
+          Cancelamento Ativo Hibrido -38dB
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          Polling Rate 1000Hz Ultra-Low Latency
+        </span>
+        <span class="industry">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          Keycaps PBT Double-Shot Anti-Brilho
+        </span>
+      </div>
+    </div>
+
     <!-- Sculpted Controls Bar -->
     <section class="controls-bar">
       <div class="category-chips">
@@ -121,6 +169,7 @@
         {% for cat in categories %}
         <button class="chip-btn" onclick="filterCategory('{{ cat }}', this)">{{ cat }}</button>
         {% endfor %}
+        <button class="chip-btn" onclick="filterCategory('favoritos', this)">★ Favoritos</button>
       </div>
 
       <div class="controls-right">
@@ -167,9 +216,22 @@
               <span class="category-tag">{{ p.category }}</span>
               <span style="font-family: var(--f-mono); font-size: 11px; color: var(--muted);">0{{ p.id }}</span>
             </div>
-            {% if p.badge %}
-            <span class="status-badge">{{ p.badge }}</span>
-            {% endif %}
+            <div style="display: flex; align-items: center; gap: 8px;">
+              {% if p.badge %}
+              <span class="status-badge">{{ p.badge }}</span>
+              {% endif %}
+              <button
+                type="button"
+                class="fav-btn"
+                id="fav-{{ p.id }}"
+                onclick="toggleFavorite({{ p.id }}, '{{ p.name }}')"
+                title="Salvar nos Favoritos"
+              >
+                <svg viewBox="0 0 24 24">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div class="card-visual" onclick="openProductModal({{ p.id }})" style="cursor: pointer;" title="Inspecionar especificacoes e reviews">
@@ -243,6 +305,243 @@
         </div>
       </article>
       {% endfor %}
+    </section>
+
+    <!-- Potadot Interactive Setup Presets Stage (.serve-grid) -->
+    <section class="serve-section" id="setupKits">
+      <div class="serve-grid">
+        <div class="serve-side">
+          <div class="eyebrow">Arquitetura de Bancada · Bundles</div>
+          <h2 class="dot-end" style="font-size: clamp(30px, 3.6vw, 48px);">Kits homologados por perfil de engenharia</h2>
+          <p style="color: var(--muted); font-size: 16px;">Selecione uma configuracao pre-calibrada e adicione todos os perifericos ao carrinho com um unico comando.</p>
+
+          <ul class="serve-tabs">
+            <li>
+              <button type="button" class="serve-tab is-active" onclick="switchSetupKit(0, this)">
+                <span class="ic">01</span>
+                <b>Kit Core · Backend &amp; Neovim</b>
+                <span class="d">Foco em digitacao tatil, ergonomia vertical e deslize de precisao</span>
+                <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="serve-tab" onclick="switchSetupKit(1, this)">
+                <span class="ic">02</span>
+                <b>Kit Workstation · Dual 4K</b>
+                <span class="d">Expansao Thunderbolt/USB-C 100W, articulacao a gas e TKL RGB</span>
+                <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="serve-tab" onclick="switchSetupKit(2, this)">
+                <span class="ic">03</span>
+                <b>Kit Deep Work · Isolamento ANC</b>
+                <span class="d">Cancelamento de ruido -38dB, mouse vertical antifadiga e Cordura</span>
+                <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="serve-stage">
+          <!-- Kit 01 -->
+          <div class="kit-scene is-active" id="kit-scene-0">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+              <div>
+                <span class="category-tag">PRESET 01 · CORE DEV</span>
+                <h3 style="font-size: 1.65rem; margin-top: 8px;">Estacao Backend &amp; Terminal</h3>
+                <p style="color: var(--muted); font-size: 14.5px; margin-top: 4px;">Zero fadiga em sessoes de 10h+ de teclado e terminal.</p>
+              </div>
+              <span class="status-badge">FRETE GRATIS INCLUSO</span>
+            </div>
+
+            <div class="kit-items-grid">
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 01</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Teclado Mecanico TKL RGB</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Switches Tactile Lubed · PBT</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 349,90</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 02</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Mouse Ergonomico Vertical</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Angulo 57° · Dual 2.4G + BT</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 179,90</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 03</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Desk Mat Cordura 900x400</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Tecido Militar Impermeavel</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 99,00</strong>
+              </div>
+            </div>
+
+            <div class="kit-foot">
+              <div>
+                <div style="font-family: var(--f-mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: .1em;">Total do Kit (Elegivel a SIDI20)</div>
+                <div style="font-family: var(--f-display); font-size: 1.75rem; font-weight: 800; color: var(--white);">R$ 628,80 <small style="font-size: 0.85rem; color: var(--on-dark-muted); font-weight: 500;">(ou R$ 503,04 c/ SIDI20)</small></div>
+              </div>
+              <button type="button" class="btn-checkout" style="width: auto; padding: 14px 24px;" onclick="addKitBundle([1, 2, 6], 'Kit Core Backend & Neovim')">
+                <span>Adicionar Kit Completo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Kit 02 -->
+          <div class="kit-scene" id="kit-scene-1">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+              <div>
+                <span class="category-tag">PRESET 02 · DUAL 4K WORKSTATION</span>
+                <h3 style="font-size: 1.65rem; margin-top: 8px;">Estacao Full-Stack Multi-Monitor</h3>
+                <p style="color: var(--muted); font-size: 14.5px; margin-top: 4px;">Conectividade de cabo unico 100W e ergonomia visual VESA.</p>
+              </div>
+              <span class="status-badge">FRETE GRATIS INCLUSO</span>
+            </div>
+
+            <div class="kit-items-grid">
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 01</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Dock Station USB-C 10 em 1</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Dual HDMI 4K@60Hz · PD 100W</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 289,00</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 02</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Suporte Articulado a Gas</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Pistao a Gas · Telas ate 34"</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 229,00</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 03</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Teclado Mecanico TKL RGB</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Switches Tactile Lubed · PBT</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 349,90</strong>
+              </div>
+            </div>
+
+            <div class="kit-foot">
+              <div>
+                <div style="font-family: var(--f-mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: .1em;">Total do Kit (Elegivel a SIDI20)</div>
+                <div style="font-family: var(--f-display); font-size: 1.75rem; font-weight: 800; color: var(--white);">R$ 867,90 <small style="font-size: 0.85rem; color: var(--on-dark-muted); font-weight: 500;">(ou R$ 694,32 c/ SIDI20)</small></div>
+              </div>
+              <button type="button" class="btn-checkout" style="width: auto; padding: 14px 24px;" onclick="addKitBundle([5, 4, 1], 'Kit Workstation Dual 4K')">
+                <span>Adicionar Kit Completo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Kit 03 -->
+          <div class="kit-scene" id="kit-scene-2">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+              <div>
+                <span class="category-tag">PRESET 03 · DEEP WORK ANC</span>
+                <h3 style="font-size: 1.65rem; margin-top: 8px;">Estacao Foco &amp; Dailies</h3>
+                <p style="color: var(--muted); font-size: 14.5px; margin-top: 4px;">Isolamento acustico total e microfone cardioide para chamadas.</p>
+              </div>
+              <span class="status-badge">FRETE GRATIS INCLUSO</span>
+            </div>
+
+            <div class="kit-items-grid">
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 01</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Headset Wireless ANC</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Drivers 50mm · Bateria 40h</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 489,00</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 02</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Mouse Ergonomico Vertical</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Angulo 57° · Dual 2.4G + BT</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 179,90</strong>
+              </div>
+              <div class="kit-item-card">
+                <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green-ink);">ITEM 03</span>
+                <strong style="font-family: var(--f-display); font-size: 15.5px;">Desk Mat Cordura 900x400</strong>
+                <span style="font-size: 12.5px; color: var(--muted);">Tecido Militar Impermeavel</span>
+                <strong style="font-family: var(--f-mono); font-size: 14px; color: var(--ink); margin-top: auto;">R$ 99,00</strong>
+              </div>
+            </div>
+
+            <div class="kit-foot">
+              <div>
+                <div style="font-family: var(--f-mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: .1em;">Total do Kit (Elegivel a SIDI20)</div>
+                <div style="font-family: var(--f-display); font-size: 1.75rem; font-weight: 800; color: var(--white);">R$ 767,90 <small style="font-size: 0.85rem; color: var(--on-dark-muted); font-weight: 500;">(ou R$ 614,32 c/ SIDI20)</small></div>
+              </div>
+              <button type="button" class="btn-checkout" style="width: auto; padding: 14px 24px;" onclick="addKitBundle([3, 2, 6], 'Kit Deep Work ANC')">
+                <span>Adicionar Kit Completo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Potadot Neumorphic FAQ Section (.faq-grid) -->
+    <section class="faq-section">
+      <div class="faq-grid">
+        <div class="faq-side">
+          <div class="eyebrow">Engenharia &amp; Logistica</div>
+          <h2 class="dot-end" style="font-size: clamp(30px, 3.6vw, 48px);">Perguntas frequentes</h2>
+          <p style="color: var(--muted); font-size: 16px;">Especificacoes de homologacao, despacho a partir de Curitiba/PR e politica de garantia direta.</p>
+          <div style="margin-top: 8px;">
+            <a href="/track" class="btn">
+              <span class="btn-t"><span data-t="Consultar Codigo">Rastrear Pedido</span></span>
+              <span class="btn-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <div class="faq">
+          <details open>
+            <summary>
+              <span>Os switches do Teclado Mecanico TKL sao hot-swap e lubrificados?</span>
+              <span class="pm"></span>
+            </summary>
+            <div class="ans">
+              <p>Sim. O PCB possui soquetes hot-swap de 5 pinos compativeis com switches Cherry, Gateron e Kailh. Os switches Tactile Brown e estabilizadores ja saem lubrificados de fabrica para eliminar ressonancia metalica.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>A Dock Station USB-C 10 em 1 suporta dois monitores 4K a 60Hz simultaneos?</span>
+              <span class="pm"></span>
+            </summary>
+            <div class="ans">
+              <p>Sim, em estacoes com porta USB-C DisplayPort 1.4 Alt Mode / Thunderbolt 3 ou 4, mantendo simultaneamente Gigabit Ethernet (1000 Mbps) e Power Delivery de ate 100W.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Como funciona o calculo de frete e o cupom SIDI20?</span>
+              <span class="pm"></span>
+            </summary>
+            <div class="ans">
+              <p>Pedidos acima de R$ 500,00 possuem frete gratis automatico para qualquer CEP. Aplicando o cupom <strong>SIDI20</strong> no checkout, voce recebe 20% OFF + isencao de frete + 5% adicional caso opte por liquidacao via PIX.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Potadot Deep-Teal CTA Block -->
+    <section class="cta-block">
+      <div class="cta-orb"></div>
+      <div class="eyebrow">Pronto para elevar sua estacao</div>
+      <h2 class="dot-end">Configure seu setup hoje</h2>
+      <div class="cta-row">
+        <p style="color: var(--on-dark-muted); max-width: 46ch; font-size: 16.5px;">
+          Estoque local em Curitiba/PR com emissao imediata de recibo e rastreamento em tempo real.
+        </p>
+        <button type="button" class="btn-checkout" style="width: auto; padding: 16px 28px;" onclick="openDrawer()">
+          <span>Abrir Carrinho e Finalizar</span>
+        </button>
+      </div>
     </section>
 
   </main>
@@ -400,9 +699,56 @@
   <!-- Toast Notification -->
   <div class="toast-notice" id="toast"></div>
 
-  <!-- Footer -->
-  <footer>
-    <p>NOVASTORE ENGINE v3.0 · POTADOT TACTILE ARCHITECTURE · GUILHERME GUSTAVO WEBER</p>
+  <!-- Potadot Architectural Footer -->
+  <footer class="site-footer">
+    <div class="foot-inner">
+      <div class="foot-grid">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <div class="logo-icon" style="width: 34px; height: 34px;">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <span style="font-family: var(--f-display); font-size: 1.35rem; font-weight: 800; color: var(--on-dark);">NovaStore</span>
+          </div>
+          <p style="color: var(--on-dark-muted); font-size: 14.5px; max-width: 34ch; line-height: 1.55;">
+            Hardware de precisao, perifericos tateis e ergonomia para engenheiros de software.
+          </p>
+        </div>
+
+        <div>
+          <h4>Navegacao</h4>
+          <ul>
+            <li><a href="/">Vitrine Principal</a></li>
+            <li><a href="#setupKits">Kits de Engenharia</a></li>
+            <li><a href="/track">Rastreamento de Pedidos</a></li>
+            <li><a href="/admin">Backoffice Admin</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Cupons Ativos</h4>
+          <ul>
+            <li><a href="javascript:void(0)" onclick="navigator.clipboard.writeText('SIDI20'); showToast('SIDI20 copiado!');">SIDI20 (20% + Frete Gratis)</a></li>
+            <li><a href="javascript:void(0)" onclick="navigator.clipboard.writeText('DEV10'); showToast('DEV10 copiado!');">DEV10 (10% OFF)</a></li>
+            <li><a href="javascript:void(0)" onclick="navigator.clipboard.writeText('FRETEGRATIS'); showToast('FRETEGRATIS copiado!');">FRETEGRATIS (Isencao Total)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Arquitetura</h4>
+          <ul>
+            <li><a href="/docs">OpenAPI / Swagger Specs</a></li>
+            <li><span style="color: var(--on-dark-muted); font-size: 14px;">FastAPI + SQLite Nativo</span></li>
+            <li><span style="color: var(--on-dark-muted); font-size: 14px;">Curitiba · PR · Brasil</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="foot-bottom">
+        <span>NOVASTORE ENGINE v3.0 · POTADOT TACTILE STANDARD</span>
+        <span>DESENVOLVIDO PARA GUILHERME GUSTAVO WEBER</span>
+      </div>
+    </div>
   </footer>
 
   <script src="/static/app.js"></script>

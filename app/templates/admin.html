@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Admin - NovaStore Engine</title>
+  <title>Backoffice Admin — NovaStore Engine</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -15,23 +15,28 @@
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
-      <span class="logo-text">NovaStore</span>
+      <span class="logo-text dot-end">NovaStore</span>
       <span class="badge-pill">Backoffice Admin</span>
     </a>
 
     <div class="nav-actions">
       <a href="/" class="nav-link">Vitrine</a>
       <a href="/track" class="nav-link">Rastrear Pedido</a>
-      <a href="/admin" class="nav-link active">Admin</a>
+      <a href="/admin" class="nav-link active">Backoffice</a>
     </div>
   </header>
 
   <main class="container">
+    <div style="margin-bottom: 1.75rem;">
+      <div class="eyebrow">Centro de Operacoes · SQLite Nativo</div>
+      <h1 class="dot-end" style="font-size: clamp(28px, 3.6vw, 44px); margin-top: 8px;">Painel de controle executivo</h1>
+    </div>
+
     <!-- KPIs -->
     <section class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Receita Liquida (Ativos)</div>
-        <div class="kpi-value" style="color: var(--primary);">R$ {{ "%.2f"|format(metrics.total_revenue)|replace(".", ",") }}</div>
+        <div class="kpi-value" style="color: var(--green-ink);">R$ {{ "%.2f"|format(metrics.total_revenue)|replace(".", ",") }}</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Pedidos Confirmados</div>
@@ -43,8 +48,8 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Estoque Critico (&le; 5 un.)</div>
-        <div class="kpi-value" style="color: {% if metrics.low_stock_count > 0 %}#fbbf24{% else %}var(--success){% endif %};">
-          {{ metrics.low_stock_count }} de {{ metrics.active_products }}
+        <div class="kpi-value" style="color: {% if metrics.low_stock_count > 0 %}var(--brown){% else %}var(--green-ink){% endif %};">
+          {{ metrics.low_stock_count }} <span style="font-size: 0.45em; color: var(--muted);">/ {{ metrics.active_products }}</span>
         </div>
       </div>
     </section>
@@ -53,8 +58,9 @@
     <section class="admin-panel-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
         <div>
-          <h2 style="font-size: 1.2rem; font-weight: 800;">Gestao de Pedidos e Logistica</h2>
-          <p style="font-size: 0.84rem; color: var(--text-muted);">Alterar para "Cancelado" estorna automaticamente os itens para o estoque.</p>
+          <div class="eyebrow" style="font-size: 11px;">Logistica &amp; Expedicao</div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; margin-top: 4px;">Gestao de Pedidos</h2>
+          <p style="font-size: 0.88rem; color: var(--muted);">Alterar para "Cancelado" estorna automaticamente os itens para o estoque.</p>
         </div>
       </div>
 
@@ -75,27 +81,27 @@
             {% for o in orders %}
             <tr>
               <td>
-                <a href="/order/{{ o.order_id }}" style="color: var(--primary); font-family: monospace; font-weight: 700; text-decoration: none;">
+                <a href="/order/{{ o.order_id }}" style="color: var(--green-ink); font-family: var(--f-mono); font-weight: 700; text-decoration: none;">
                   {{ o.order_id }}
                 </a>
               </td>
               <td>
-                <div style="font-weight: 600;">{{ o.customer_name }}</div>
-                <div style="font-size: 0.78rem; color: var(--text-dim);">{{ o.customer_email }}</div>
+                <div style="font-weight: 700;">{{ o.customer_name }}</div>
+                <div style="font-size: 0.8rem; color: var(--muted);">{{ o.customer_email }}</div>
               </td>
-              <td style="color: var(--text-muted); font-size: 0.82rem;">{{ o.created_at }}</td>
+              <td style="color: var(--muted); font-size: 0.84rem;">{{ o.created_at }}</td>
               <td>
                 <span style="text-transform: uppercase; font-weight: 700; font-size: 0.8rem;">{{ o.payment_method }}</span>
                 {% if o.coupon_code %}
-                <span class="status-badge" style="margin-left: 0.35rem;">{{ o.coupon_code }}</span>
+                <span class="category-tag" style="margin-left: 0.35rem;">{{ o.coupon_code }}</span>
                 {% endif %}
               </td>
-              <td style="font-weight: 800;">R$ {{ "%.2f"|format(o.total_amount)|replace(".", ",") }}</td>
+              <td style="font-family: var(--f-display); font-weight: 800; font-size: 1.05rem;">R$ {{ "%.2f"|format(o.total_amount)|replace(".", ",") }}</td>
               <td>
                 <select
                   class="sort-select"
                   onchange="updateOrderStatus('{{ o.order_id }}', this.value)"
-                  style="padding: 0.38rem 0.65rem; font-size: 0.8rem;"
+                  style="padding: 8px 14px; font-size: 0.82rem;"
                 >
                   {% for st in ["Confirmado", "Em Separacao", "Enviado", "Entregue", "Cancelado"] %}
                   <option value="{{ st }}" {% if o.status == st %}selected{% endif %}>{{ st }}</option>
@@ -108,7 +114,7 @@
         </table>
       </div>
       {% else %}
-      <p style="color: var(--text-dim); font-size: 0.9rem;">Nenhum pedido registrado ate o momento.</p>
+      <p style="color: var(--muted); font-size: 0.92rem;">Nenhum pedido registrado ate o momento.</p>
       {% endif %}
     </section>
 
@@ -116,12 +122,13 @@
     <section class="admin-panel-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <h2 style="font-size: 1.2rem; font-weight: 800;">Controle de Catalogo e Estoque</h2>
-          <p style="font-size: 0.84rem; color: var(--text-muted);">Ajuste preco e saldo em estoque diretamente ou cadastre novos itens.</p>
+          <div class="eyebrow" style="font-size: 11px;">Inventario &amp; Precos</div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; margin-top: 4px;">Controle de Catalogo e Estoque</h2>
+          <p style="font-size: 0.88rem; color: var(--muted);">Ajuste preco e saldo em estoque diretamente ou cadastre novos itens.</p>
         </div>
       </div>
 
-      <div style="overflow-x: auto; margin-bottom: 1.75rem;">
+      <div style="overflow-x: auto; margin-bottom: 2rem;">
         <table class="data-table">
           <thead>
             <tr>
@@ -137,10 +144,10 @@
           <tbody>
             {% for p in products %}
             <tr>
-              <td style="color: var(--text-dim); font-family: monospace;">#{{ p.id }}</td>
+              <td style="color: var(--muted); font-family: var(--f-mono);">#0{{ p.id }}</td>
               <td>
                 <div style="font-weight: 700;">{{ p.name }}</div>
-                {% if p.badge %}<span class="status-badge" style="font-size: 0.65rem;">{{ p.badge }}</span>{% endif %}
+                {% if p.badge %}<span class="status-badge" style="font-size: 10px; margin-top: 3px;">{{ p.badge }}</span>{% endif %}
               </td>
               <td><span class="category-tag">{{ p.category }}</span></td>
               <td>
@@ -150,7 +157,7 @@
                   id="price-{{ p.id }}"
                   class="form-input"
                   value="{{ '%.2f'|format(p.price) }}"
-                  style="width: 110px; padding: 0.35rem 0.55rem; font-size: 0.85rem;"
+                  style="width: 115px; padding: 8px 12px; font-size: 0.88rem;"
                 >
               </td>
               <td>
@@ -160,13 +167,13 @@
                   class="form-input"
                   value="{{ p.stock }}"
                   min="0"
-                  style="width: 85px; padding: 0.35rem 0.55rem; font-size: 0.85rem;"
+                  style="width: 90px; padding: 8px 12px; font-size: 0.88rem;"
                 >
               </td>
-              <td>{{ "%.1f"|format(p.avg_rating) }} ({{ p.review_count }})</td>
+              <td style="font-family: var(--f-mono); font-size: 0.85rem;">★ {{ "%.1f"|format(p.avg_rating) }} ({{ p.review_count }})</td>
               <td style="text-align: right; white-space: nowrap;">
-                <button class="btn-ghost" onclick="saveProductQuick({{ p.id }})" style="padding: 0.38rem 0.7rem;">Salvar</button>
-                <button class="btn-remove" onclick="deleteProduct({{ p.id }})" style="display: inline-flex; margin-left: 0.35rem;" title="Excluir produto">
+                <button class="btn-ghost" onclick="saveProductQuick({{ p.id }})" style="padding: 8px 14px;">Salvar</button>
+                <button class="btn-remove" onclick="deleteProduct({{ p.id }})" style="display: inline-grid; margin-left: 6px;" title="Excluir produto">
                   &times;
                 </button>
               </td>
@@ -177,31 +184,40 @@
       </div>
 
       <!-- Create New Product Form -->
-      <form onsubmit="createNewProduct(event)" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
-        <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">Cadastrar Novo Produto no Catalogo</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 0.75rem;">
+      <form onsubmit="createNewProduct(event)" style="background: var(--card); box-shadow: var(--shadow-soft); border-radius: 24px; padding: 22px;">
+        <div class="eyebrow" style="font-size: 11px; margin-bottom: 12px;">Novo SKU</div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 14px;">Cadastrar Produto no Catalogo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 10px;">
           <input type="text" id="newProdName" class="form-input" placeholder="Nome do Produto" required minlength="2">
           <input type="text" id="newProdCat" class="form-input" placeholder="Categoria (ex: Perifericos)" required minlength="2">
           <input type="number" step="0.01" id="newProdPrice" class="form-input" placeholder="Preco (ex: 399.90)" required min="0.01">
           <input type="number" id="newProdStock" class="form-input" placeholder="Estoque Inicial" required min="0">
           <input type="text" id="newProdBadge" class="form-input" placeholder="Badge opcional (ex: Novo)">
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.75rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center;">
           <input type="text" id="newProdDesc" class="form-input" placeholder="Descricao comercial do produto..." required minlength="5">
           <input type="text" id="newProdSpecs" class="form-input" placeholder="Specs separadas por | (ex: USB-C | 1000Hz)">
-          <button type="submit" class="btn-primary">Adicionar Produto</button>
+          <button type="submit" class="btn">
+            <span class="btn-t"><span data-t="Publicar SKU">Adicionar Produto</span></span>
+            <span class="btn-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </span>
+          </button>
         </div>
       </form>
     </section>
 
     <!-- Coupons Management -->
     <section class="admin-panel-card">
-      <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">Cupons Promocionais</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
+      <div class="eyebrow" style="font-size: 11px;">Motor de Promocoes</div>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin: 4px 0 16px;">Cupons Promocionais</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem;">
         {% for c in coupons %}
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem 1rem;">
-          <div style="font-family: monospace; font-weight: 800; color: var(--primary); font-size: 1rem;">{{ c.code }}</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+        <div style="background: var(--card); box-shadow: var(--shadow-soft); border-radius: 18px; padding: 14px 18px;">
+          <div style="font-family: var(--f-mono); font-weight: 800; color: var(--green-ink); font-size: 1rem;">{{ c.code }}</div>
+          <div style="font-size: 0.84rem; color: var(--muted); margin-top: 2px;">
             {{ "%.0f"|format(c.discount_percent) }}% OFF
             {% if c.free_shipping %} + Frete Gratis{% endif %}
           </div>
@@ -209,10 +225,10 @@
         {% endfor %}
       </div>
 
-      <form onsubmit="saveCoupon(event)" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
-        <input type="text" id="cpCode" class="form-input" placeholder="CODIGO (ex: BLACK30)" required style="max-width: 180px; text-transform: uppercase;">
-        <input type="number" step="1" min="0" max="100" id="cpDiscount" class="form-input" placeholder="% Desconto" required style="max-width: 140px;">
-        <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+      <form onsubmit="saveCoupon(event)" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+        <input type="text" id="cpCode" class="form-input" placeholder="CODIGO (ex: BLACK30)" required style="max-width: 190px; text-transform: uppercase;">
+        <input type="number" step="1" min="0" max="100" id="cpDiscount" class="form-input" placeholder="% Desconto" required style="max-width: 150px;">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--ink-2); cursor: pointer;">
           <input type="checkbox" id="cpFreeShip"> Frete Gratis
         </label>
         <button type="submit" class="btn-ghost">Salvar Cupom</button>
@@ -222,8 +238,13 @@
 
   <div class="toast-notice" id="toast"></div>
 
-  <footer>
-    <p>NovaStore Engine v2.0 &copy; 2026 - Painel de Operacoes e Controle de Estoque.</p>
+  <footer class="site-footer">
+    <div class="foot-inner">
+      <div class="foot-bottom" style="padding-top: 0;">
+        <span>NOVASTORE ENGINE v3.0 · BACKOFFICE DE OPERACOES</span>
+        <span>GUILHERME GUSTAVO WEBER</span>
+      </div>
+    </div>
   </footer>
 
   <script src="/static/app.js"></script>

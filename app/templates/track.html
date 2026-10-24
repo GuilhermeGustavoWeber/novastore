@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rastreamento de Pedidos - NovaStore</title>
+  <title>Rastreamento de Pedidos — NovaStore</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -15,25 +15,26 @@
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
-      <span class="logo-text">NovaStore</span>
-      <span class="badge-pill">Rastreio & Historico</span>
+      <span class="logo-text dot-end">NovaStore</span>
+      <span class="badge-pill">Rastreio &amp; Historico</span>
     </a>
 
     <div class="nav-actions">
       <a href="/" class="nav-link">Vitrine</a>
       <a href="/track" class="nav-link active">Rastrear Pedido</a>
-      <a href="/admin" class="nav-link">Admin</a>
+      <a href="/admin" class="nav-link">Backoffice</a>
     </div>
   </header>
 
-  <main class="container" style="max-width: 880px;">
+  <main class="container" style="max-width: 900px;">
     <section class="admin-panel-card">
-      <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem;">Rastreamento e Historico de Pedidos</h1>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
-        Informe o identificador do pedido (ex: <code style="color: var(--primary);">ORD-XXXX</code>) ou o e-mail utilizado na compra.
+      <div class="eyebrow">Logistica &amp; Telemetria de Entrega</div>
+      <h1 class="dot-end" style="font-size: clamp(28px, 3.6vw, 44px); margin: 10px 0 8px;">Rastreamento e historico de pedidos</h1>
+      <p style="color: var(--muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Informe o identificador do pedido (ex: <code style="color: var(--green-ink); font-weight: 700;">ORD-XXXX</code>) ou o e-mail utilizado na compra.
       </p>
 
-      <form method="GET" action="/track" style="display: flex; gap: 0.75rem;">
+      <form method="GET" action="/track" style="display: flex; gap: 12px; flex-wrap: wrap;">
         <input
           type="text"
           name="q"
@@ -42,9 +43,15 @@
           placeholder="Digite o codigo ORD-... ou seu e-mail (ex: guilherme@dev.com)"
           required
           minlength="2"
+          style="flex: 1; min-width: 240px;"
         >
-        <button type="submit" class="btn-primary" style="white-space: nowrap; padding: 0 1.5rem;">
-          <span>Consultar</span>
+        <button type="submit" class="btn">
+          <span class="btn-t"><span data-t="Buscar Agora">Consultar Pedido</span></span>
+          <span class="btn-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
         </button>
       </form>
     </section>
@@ -54,22 +61,22 @@
         {% set steps = ["Confirmado", "Em Separacao", "Enviado", "Entregue"] %}
         {% for order in orders %}
         <div class="admin-panel-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem;">
             <div>
-              <span style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary);">{{ order.order_id }}</span>
-              <span style="color: var(--text-dim); font-size: 0.82rem; margin-left: 0.5rem;">{{ order.created_at }}</span>
+              <span style="font-family: var(--f-mono); font-size: 1.15rem; font-weight: 800; color: var(--green-ink);">{{ order.order_id }}</span>
+              <span style="color: var(--muted); font-size: 0.84rem; margin-left: 0.6rem;">{{ order.created_at }}</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span class="status-badge" {% if order.status == 'Cancelado' %}style="background: rgba(244,63,94,0.15); color: var(--danger); border-color: rgba(244,63,94,0.3);"{% endif %}>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="status-badge" {% if order.status == 'Cancelado' %}style="background: #fde8ec; color: var(--danger);"{% endif %}>
                 {{ order.status }}
               </span>
-              <a href="/order/{{ order.order_id }}" class="btn-ghost" style="text-decoration: none; padding: 0.35rem 0.75rem;">Ver Recibo</a>
+              <a href="/order/{{ order.order_id }}" class="btn-ghost">Ver Recibo</a>
             </div>
           </div>
 
           {% if order.status == 'Cancelado' %}
-          <div style="margin: 1.25rem 0; padding: 0.85rem 1rem; background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.25); border-radius: var(--radius-sm); color: var(--danger); font-size: 0.88rem; font-weight: 600;">
-            Este pedido foi cancelado e o estoque dos itens foi estornado.
+          <div style="margin: 1.25rem 0; padding: 14px 18px; background: #fde8ec; border-radius: 16px; color: var(--danger); font-size: 0.9rem; font-weight: 600;">
+            Este pedido foi cancelado e o estoque dos itens foi estornado automaticamente.
           </div>
           {% else %}
           {% set current_idx = steps.index(order.status) if order.status in steps else 0 %}
@@ -84,29 +91,34 @@
           </div>
           {% endif %}
 
-          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.9rem; color: var(--ink-2); margin-top: 1rem;">
             <div>
               <strong>Cliente:</strong> {{ order.customer_name }} ({{ order.customer_email }})<br>
-              <strong>Destino:</strong> {{ order.customer_address }} - CEP {{ order.zip_code }}
+              <strong>Destino:</strong> {{ order.customer_address }} · CEP {{ order.zip_code }}
             </div>
             <div style="text-align: right;">
               <strong>Itens:</strong> {{ order.items | length }} produto(s)<br>
-              <strong>Total:</strong> <span style="color: var(--primary); font-weight: 800; font-size: 1rem;">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
+              <strong>Total:</strong> <span style="color: var(--green-ink); font-family: var(--f-display); font-weight: 800; font-size: 1.2rem;">R$ {{ "%.2f"|format(order.total_amount)|replace(".", ",") }}</span>
             </div>
           </div>
         </div>
         {% endfor %}
       {% else %}
         <div class="admin-panel-card" style="text-align: center; padding: 3rem 1.5rem;">
-          <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">Nenhum pedido localizado para "{{ query }}"</p>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.4rem;">Verifique o codigo digitado ou tente buscar pelo e-mail cadastrado no checkout.</p>
+          <p style="font-family: var(--f-display); font-size: 1.25rem; font-weight: 700; color: var(--ink);">Nenhum pedido localizado para "{{ query }}"</p>
+          <p style="font-size: 0.92rem; color: var(--muted); margin-top: 0.4rem;">Verifique o codigo digitado ou tente buscar pelo e-mail cadastrado no checkout.</p>
         </div>
       {% endif %}
     {% endif %}
   </main>
 
-  <footer>
-    <p>NovaStore Engine v2.0 &copy; 2026 - Rastreamento em tempo real via SQLite.</p>
+  <footer class="site-footer">
+    <div class="foot-inner">
+      <div class="foot-bottom" style="padding-top: 0;">
+        <span>NOVASTORE ENGINE v3.0 · RASTREAMENTO EM TEMPO REAL</span>
+        <span>GUILHERME GUSTAVO WEBER</span>
+      </div>
+    </div>
   </footer>
 
 </body>
