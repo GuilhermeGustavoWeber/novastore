@@ -323,27 +323,27 @@ function refreshCheckoutTotals() {
   const finalTotal = Math.max(0, +(subtotal - totalDiscount + shipping).toFixed(2));
 
   let itemsHtml =
-    '<div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">';
+    '<div style="background: var(--card); box-shadow: var(--shadow-soft); border-radius: 20px; padding: 16px;">';
 
   cart.forEach((i) => {
     const sub = i.price * i.quantity;
     itemsHtml += `
-      <div style="display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 0.35rem;">
-        <span style="color: var(--text-muted);">${i.name} &times; ${i.quantity}</span>
-        <span style="font-weight: 600;">R$ ${sub.toFixed(2).replace(".", ",")}</span>
+      <div style="display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 0.4rem;">
+        <span style="color: var(--ink-2);">${i.name} &times; ${i.quantity}</span>
+        <span style="font-weight: 700; color: var(--ink);">R$ ${sub.toFixed(2).replace(".", ",")}</span>
       </div>
     `;
   });
 
   itemsHtml += `
-    <div style="border-top: 1px solid var(--border-subtle); margin-top: 0.6rem; padding-top: 0.6rem; font-size: 0.84rem; color: var(--text-muted);">
+    <div style="border-top: 1px solid var(--line); margin-top: 0.65rem; padding-top: 0.65rem; font-size: 0.85rem; color: var(--muted);">
       <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
         <span>Subtotal:</span>
         <span>R$ ${subtotal.toFixed(2).replace(".", ",")}</span>
       </div>
       ${
         totalDiscount > 0
-          ? `<div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem; color: var(--success);">
+          ? `<div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem; color: var(--green-ink); font-weight: 600;">
               <span>Descontos (${checkoutState.couponCode || "PIX"}):</span>
               <span>- R$ ${totalDiscount.toFixed(2).replace(".", ",")}</span>
             </div>`
@@ -351,12 +351,12 @@ function refreshCheckoutTotals() {
       }
       <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
         <span>Frete (${checkoutState.shippingRegion} - ${checkoutState.shippingDays}d uteis):</span>
-        <span>${shipping === 0 ? '<strong style="color: var(--success);">Gratis</strong>' : "R$ " + shipping.toFixed(2).replace(".", ",")}</span>
+        <span>${shipping === 0 ? '<strong style="color: var(--green-ink);">Gratis</strong>' : "R$ " + shipping.toFixed(2).replace(".", ",")}</span>
       </div>
     </div>
-    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 800; border-top: 1px solid var(--border-subtle); padding-top: 0.6rem; margin-top: 0.5rem;">
-      <span>Total a Liquidar:</span>
-      <span style="color: var(--primary);">R$ ${finalTotal.toFixed(2).replace(".", ",")}</span>
+    <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; border-top: 1px solid var(--line); padding-top: 0.65rem; margin-top: 0.5rem;">
+      <span style="color: var(--ink);">Total a Liquidar:</span>
+      <span style="color: var(--green-ink);">R$ ${finalTotal.toFixed(2).replace(".", ",")}</span>
     </div>
   </div>`;
 
@@ -578,4 +578,17 @@ async function saveCoupon(event) {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderCartUI();
+
+  // Potadot interactive spotlight tracking on tactile cards
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("pointermove", (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    });
+    card.addEventListener("pointerleave", () => {
+      card.style.setProperty("--mx", "-999px");
+      card.style.setProperty("--my", "-999px");
+    });
+  });
 });

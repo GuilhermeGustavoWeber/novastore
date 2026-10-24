@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NovaStore - Engenharia de Setups & Hardware Dev</title>
+  <title>NovaStore — Engenharia de Setups & Hardware Dev</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-  <!-- Top Navigation -->
+  <!-- Floating Pill Navigation (Potadot Style) -->
   <header class="navbar">
     <a href="/" class="logo-wrap">
       <div class="logo-icon">
@@ -16,30 +16,15 @@
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
-      <span class="logo-text">NovaStore</span>
-      <span class="badge-pill">SYS.V2.5 // PRO</span>
+      <span class="logo-text dot-end">NovaStore</span>
+      <span class="badge-pill">Dev Gear</span>
     </a>
 
     <div class="nav-actions">
-      <a href="/track" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
-        <span>Rastrear Pedido</span>
-      </a>
-      <a href="/admin" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-        </svg>
-        <span>Backoffice</span>
-      </a>
+      <a href="/" class="nav-link active">Vitrine</a>
+      <a href="/track" class="nav-link">Rastrear Pedido</a>
+      <a href="/admin" class="nav-link">Backoffice</a>
       <button class="cart-toggle-btn" onclick="openDrawer()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="9" cy="21" r="1"/>
-          <circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-        </svg>
         <span>Carrinho</span>
         <span class="cart-badge" id="cartBadge">0</span>
       </button>
@@ -49,23 +34,26 @@
   <!-- Main Container -->
   <main class="container">
     
-    <!-- Architectural Bento Hero Banner -->
+    <!-- Potadot Tactile Hero with Neumorphic Orbs & Deep-Teal Mockup Window -->
     <section class="hero">
+      <div class="orb orb--ring" style="width: 340px; height: 340px; right: -80px; bottom: -110px;"></div>
+      <div class="orb" style="width: 180px; height: 180px; left: -60px; top: -60px; opacity: 0.6;"></div>
+
       <div class="hero-grid">
         <div>
-          <div class="hero-tag">BATCH 2026.4 // HARDWARE DE PRECISAO</div>
-          <h1>Acustica, ergonomia e <span>latencia zero</span> para engenheiros de software</h1>
-          <p>Equipamentos projetados com chassi em aluminio CNC, switches lubrificados de fabrica e sensores de alta precisao para sessoes intensivas de desenvolvimento.</p>
+          <div class="eyebrow">Estacao de Engenharia · Batch 2026</div>
+          <h1 class="dot-end">Hardware tatil e ergonomia de <span>precisao</span></h1>
+          <p>Perifericos projetados com switches lubrificados de fabrica, aluminio usinado e baixa latencia para quem passa o dia construindo software.</p>
           
           <div class="hero-features">
             <div class="hero-feature-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
               <span>Garantia Direta 12 Meses</span>
             </div>
             <div class="hero-feature-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2">
                 <rect x="1" y="3" width="15" height="13"/>
                 <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
                 <circle cx="5.5" cy="18.5" r="2.5"/>
@@ -74,7 +62,7 @@
               <span>Frete Gratis &gt; R$ 500</span>
             </div>
             <div class="hero-feature-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
               <span>5% OFF Adicional no PIX</span>
@@ -82,17 +70,18 @@
           </div>
         </div>
 
-        <!-- Telemetry & Promo HUD Card -->
+        <!-- Deep-Teal Window (.on-dark) + Floating Toast Card -->
         <div class="hero-hud-card">
           <div class="hud-header">
-            <span>TELEMETRIA DE ESTACAO // LAB SPEC</span>
-            <span style="color: var(--success);">&bull; HOMOLOGADO</span>
+            <span class="hud-dots"><i></i><i></i><i></i></span>
+            <span>novastore://lab-telemetry</span>
+            <span class="hud-live">LIVE</span>
           </div>
 
           <div class="hud-metrics-grid">
             <div class="hud-metric-box">
               <div class="hud-metric-label">Polling Rate</div>
-              <div class="hud-metric-val">1000 Hz / 1ms</div>
+              <div class="hud-metric-val">1000 Hz · 1ms</div>
             </div>
             <div class="hud-metric-box">
               <div class="hud-metric-label">Isolamento ANC</div>
@@ -103,15 +92,15 @@
               <div class="hud-metric-val">100W Dual 4K</div>
             </div>
             <div class="hud-metric-box">
-              <div class="hud-metric-label">Despacho Local</div>
-              <div class="hud-metric-val">Curitiba / PR</div>
+              <div class="hud-metric-label">Expedicao</div>
+              <div class="hud-metric-val">Curitiba · PR</div>
             </div>
           </div>
 
           <div class="coupon-strip">
             <div>
-              <div style="font-weight: 700; color: #fff;">Cupom de Engenharia Ativo</div>
-              <div style="font-size: 0.74rem; color: var(--text-muted);">20% OFF + Frete Gratis no Checkout</div>
+              <div style="font-family: var(--f-display); font-weight: 700; font-size: 14.5px; color: var(--ink);">Cupom de Engenharia Ativo</div>
+              <div style="font-size: 12.5px; color: var(--muted);">20% OFF + Frete Gratis no Checkout</div>
             </div>
             <span
               class="coupon-code-tag"
@@ -125,7 +114,7 @@
       </div>
     </section>
 
-    <!-- Controls Bar -->
+    <!-- Sculpted Controls Bar -->
     <section class="controls-bar">
       <div class="category-chips">
         <button class="chip-btn active" onclick="filterCategory('todos', this)">Todos ({{ products | length }})</button>
@@ -145,7 +134,7 @@
         </select>
 
         <div class="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.2">
             <circle cx="11" cy="11" r="8"/>
             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
@@ -153,14 +142,14 @@
             type="text" 
             class="search-input" 
             id="searchInput" 
-            placeholder="Filtrar por nome, switch, 4K, ANC..." 
+            placeholder="Buscar por nome, switch, 4K..." 
             oninput="handleSearch(this.value)"
           >
         </div>
       </div>
     </section>
 
-    <!-- Products Grid -->
+    <!-- Tactile Products Grid -->
     <section class="products-grid" id="productsGrid">
       {% for p in products %}
       <article
@@ -174,9 +163,9 @@
       >
         <div>
           <div class="card-top">
-            <div style="display: flex; align-items: center; gap: 0.45rem;">
+            <div style="display: flex; align-items: center; gap: 8px;">
               <span class="category-tag">{{ p.category }}</span>
-              <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim);">SKU-0{{ p.id }}</span>
+              <span style="font-family: var(--f-mono); font-size: 11px; color: var(--muted);">0{{ p.id }}</span>
             </div>
             {% if p.badge %}
             <span class="status-badge">{{ p.badge }}</span>
@@ -201,7 +190,7 @@
 
           <div class="card-meta-row">
             <span class="rating-pill" onclick="openProductModal({{ p.id }})" title="Ver avaliacoes de clientes">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
               <span>{{ "%.1f"|format(p.avg_rating) }}</span>
@@ -209,11 +198,11 @@
             </span>
 
             {% if p.stock <= 0 %}
-            <span class="stock-pill out">ESGOTADO</span>
+            <span class="stock-pill out">Esgotado</span>
             {% elif p.stock <= 5 %}
-            <span class="stock-pill low">RESTAM {{ p.stock }} UN.</span>
+            <span class="stock-pill low">Restam {{ p.stock }} un.</span>
             {% else %}
-            <span class="stock-pill">{{ p.stock }} EM ESTOQUE</span>
+            <span class="stock-pill">{{ p.stock }} em estoque</span>
             {% endif %}
           </div>
 
@@ -239,15 +228,16 @@
               Specs
             </button>
             <button
-              class="btn-primary"
+              class="btn"
               onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})"
               {% if p.stock <= 0 %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}
             >
-              <svg viewBox="0 0 24 24" fill="none">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-              <span>Adicionar</span>
+              <span class="btn-t"><span data-t="No Carrinho +">Adicionar</span></span>
+              <span class="btn-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              </span>
             </button>
           </div>
         </div>
@@ -263,35 +253,35 @@
       <div class="modal-head">
         <div>
           <span class="category-tag" id="pmCategory">Categoria</span>
-          <h2 id="pmTitle" style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-top: 0.3rem;">Produto</h2>
+          <h2 id="pmTitle" style="font-family: var(--f-display); font-size: 1.4rem; font-weight: 800; margin-top: 0.35rem;">Produto</h2>
         </div>
         <button class="btn-close" onclick="closeProductModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <p id="pmDesc" style="color: var(--text-secondary); font-size: 0.93rem; line-height: 1.6;"></p>
+        <p id="pmDesc" style="color: var(--ink-2); font-size: 0.96rem; line-height: 1.6;"></p>
 
-        <div style="margin-top: 1.15rem;">
-          <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.06em;">Especificacoes de Engenharia</span>
+        <div style="margin-top: 1.25rem;">
+          <span class="eyebrow" style="font-size: 11px;">Especificacoes de Engenharia</span>
           <div class="specs-list" id="pmSpecs"></div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 240, 255, 0.04); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--teal); color: var(--on-dark); border-radius: 22px; padding: 18px 22px; margin-bottom: 1.5rem;">
           <div>
-            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Valor Unitario</span>
-            <div id="pmPrice" style="font-family: var(--font-mono); font-size: 1.45rem; font-weight: 800; color: var(--primary);">R$ 0,00</div>
+            <span style="font-family: var(--f-mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: .1em;">Valor Unitario</span>
+            <div id="pmPrice" style="font-family: var(--f-display); font-size: 1.6rem; font-weight: 800; color: var(--white);">R$ 0,00</div>
           </div>
-          <button class="btn-primary" id="pmAddBtn">
+          <button class="btn-checkout" id="pmAddBtn" style="width: auto; padding: 12px 24px;">
             <span>Adicionar ao Carrinho</span>
           </button>
         </div>
 
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
-          <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.85rem;">Avaliacoes Verificadas</h3>
-          <div id="pmReviewsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem;"></div>
+        <div style="border-top: 1px solid var(--line); padding-top: 1.25rem;">
+          <h3 style="font-family: var(--f-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 0.85rem;">Avaliacoes Verificadas</h3>
+          <div id="pmReviewsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem; padding: 4px;"></div>
 
-          <form id="reviewForm" onsubmit="submitProductReview(event)" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-highlight); border-radius: var(--radius-sm); padding: 1.1rem;">
-            <div style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--primary);">Publicar Review Tecnico</div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.65rem; margin-bottom: 0.65rem;">
+          <form id="reviewForm" onsubmit="submitProductReview(event)" style="background: var(--card); box-shadow: var(--shadow-soft); border-radius: 22px; padding: 18px;">
+            <div class="eyebrow" style="font-size: 11px; margin-bottom: 12px;">Publicar Review Tecnico</div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
               <input type="text" id="revAuthor" class="form-input" placeholder="Seu nome (ex: Guilherme W.)" required minlength="2">
               <select id="revRating" class="form-select" required>
                 <option value="5">5 ★ - Excelente</option>
@@ -301,9 +291,9 @@
                 <option value="1">1 ★ - Ruim</option>
               </select>
             </div>
-            <div style="display: flex; gap: 0.65rem;">
+            <div style="display: flex; gap: 10px;">
               <input type="text" id="revComment" class="form-input" placeholder="Analise sobre construcao, switches, latencia ou ergonomia..." required minlength="3">
-              <button type="submit" class="btn-primary" style="white-space: nowrap;">Publicar</button>
+              <button type="submit" class="btn-checkout" style="width: auto; white-space: nowrap;">Publicar</button>
             </div>
           </form>
         </div>
@@ -316,7 +306,7 @@
     <aside class="drawer">
       <div class="drawer-header">
         <div class="drawer-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
@@ -347,7 +337,7 @@
   <div class="modal-overlay" id="checkoutModal">
     <div class="modal-box" style="max-width: 560px;">
       <div class="modal-head">
-        <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800;">Finalizacao de Compra</h2>
+        <h2 style="font-family: var(--f-display); font-size: 1.3rem; font-weight: 800;">Finalizacao de Compra</h2>
         <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
       </div>
 
@@ -365,7 +355,7 @@
             <input type="email" id="custEmail" class="form-input" placeholder="guilherme@dev.com" required>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1.2fr 2fr; gap: 0.75rem;">
+          <div style="display: grid; grid-template-columns: 1.2fr 2fr; gap: 12px;">
             <div class="form-field">
               <label class="form-label" for="custZip">CEP (Frete)</label>
               <div class="inline-input-group">
@@ -378,7 +368,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div class="form-field">
               <label class="form-label" for="custPayment">Metodo de Pagamento</label>
               <select id="custPayment" class="form-select" required onchange="refreshCheckoutTotals()">
@@ -397,9 +387,9 @@
             </div>
           </div>
 
-          <div id="couponFeedback" style="font-family: var(--font-mono); font-size: 0.78rem; margin-bottom: 0.75rem; display: none;"></div>
+          <div id="couponFeedback" style="font-family: var(--f-mono); font-size: 12px; margin-bottom: 12px; display: none;"></div>
 
-          <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 0.75rem;">
+          <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 8px;">
             <span>Efetivar Pedido</span>
           </button>
         </form>
@@ -412,7 +402,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>NOVASTORE ENGINE v2.5 // ARQUITETURA FASTAPI + SQLITE // GUILHERME GUSTAVO WEBER</p>
+    <p>NOVASTORE ENGINE v3.0 · POTADOT TACTILE ARCHITECTURE · GUILHERME GUSTAVO WEBER</p>
   </footer>
 
   <script src="/static/app.js"></script>
