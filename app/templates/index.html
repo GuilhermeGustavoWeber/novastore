@@ -17,7 +17,7 @@
         </svg>
       </div>
       <span class="logo-text">NovaStore</span>
-      <span class="badge-pill">Dev Edition v2</span>
+      <span class="badge-pill">SYS.V2.5 // PRO</span>
     </a>
 
     <div class="nav-actions">
@@ -32,7 +32,7 @@
           <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
           <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
         </svg>
-        <span>Admin</span>
+        <span>Backoffice</span>
       </a>
       <button class="cart-toggle-btn" onclick="openDrawer()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -49,33 +49,78 @@
   <!-- Main Container -->
   <main class="container">
     
-    <!-- Hero Banner -->
+    <!-- Architectural Bento Hero Banner -->
     <section class="hero">
-      <div class="hero-tag">Ambiente de Alta Performance</div>
-      <h1>Hardware e ergonomia desenhados para <span>engenheiros de software</span></h1>
-      <p>Perifericos selecionados com foco em precisao tatil, durabilidade e produtividade extrema para sua estacao de trabalho.</p>
-      
-      <div class="hero-features">
-        <div class="hero-feature-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>Garantia de 12 meses</span>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-tag">BATCH 2026.4 // HARDWARE DE PRECISAO</div>
+          <h1>Acustica, ergonomia e <span>latencia zero</span> para engenheiros de software</h1>
+          <p>Equipamentos projetados com chassi em aluminio CNC, switches lubrificados de fabrica e sensores de alta precisao para sessoes intensivas de desenvolvimento.</p>
+          
+          <div class="hero-features">
+            <div class="hero-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>Garantia Direta 12 Meses</span>
+            </div>
+            <div class="hero-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <span>Frete Gratis &gt; R$ 500</span>
+            </div>
+            <div class="hero-feature-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span>5% OFF Adicional no PIX</span>
+            </div>
+          </div>
         </div>
-        <div class="hero-feature-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-            <rect x="1" y="3" width="15" height="13"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-          <span>Frete gratis acima de R$ 500</span>
-        </div>
-        <div class="hero-feature-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          <span>Cupons ativos: DEV10 / SIDI20</span>
+
+        <!-- Telemetry & Promo HUD Card -->
+        <div class="hero-hud-card">
+          <div class="hud-header">
+            <span>TELEMETRIA DE ESTACAO // LAB SPEC</span>
+            <span style="color: var(--success);">&bull; HOMOLOGADO</span>
+          </div>
+
+          <div class="hud-metrics-grid">
+            <div class="hud-metric-box">
+              <div class="hud-metric-label">Polling Rate</div>
+              <div class="hud-metric-val">1000 Hz / 1ms</div>
+            </div>
+            <div class="hud-metric-box">
+              <div class="hud-metric-label">Isolamento ANC</div>
+              <div class="hud-metric-val">-38 dB Hibrido</div>
+            </div>
+            <div class="hud-metric-box">
+              <div class="hud-metric-label">Power Delivery</div>
+              <div class="hud-metric-val">100W Dual 4K</div>
+            </div>
+            <div class="hud-metric-box">
+              <div class="hud-metric-label">Despacho Local</div>
+              <div class="hud-metric-val">Curitiba / PR</div>
+            </div>
+          </div>
+
+          <div class="coupon-strip">
+            <div>
+              <div style="font-weight: 700; color: #fff;">Cupom de Engenharia Ativo</div>
+              <div style="font-size: 0.74rem; color: var(--text-muted);">20% OFF + Frete Gratis no Checkout</div>
+            </div>
+            <span
+              class="coupon-code-tag"
+              onclick="navigator.clipboard.writeText('SIDI20'); showToast('Cupom SIDI20 copiado para a area de transferencia!');"
+              title="Clique para copiar"
+            >
+              SIDI20
+            </span>
+          </div>
         </div>
       </div>
     </section>
@@ -83,7 +128,7 @@
     <!-- Controls Bar -->
     <section class="controls-bar">
       <div class="category-chips">
-        <button class="chip-btn active" onclick="filterCategory('todos', this)">Todos</button>
+        <button class="chip-btn active" onclick="filterCategory('todos', this)">Todos ({{ products | length }})</button>
         {% for cat in categories %}
         <button class="chip-btn" onclick="filterCategory('{{ cat }}', this)">{{ cat }}</button>
         {% endfor %}
@@ -108,7 +153,7 @@
             type="text" 
             class="search-input" 
             id="searchInput" 
-            placeholder="Buscar produto ou spec..." 
+            placeholder="Filtrar por nome, switch, 4K, ANC..." 
             oninput="handleSearch(this.value)"
           >
         </div>
@@ -129,31 +174,34 @@
       >
         <div>
           <div class="card-top">
-            <span class="category-tag">{{ p.category }}</span>
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span class="category-tag">{{ p.category }}</span>
+              <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim);">SKU-0{{ p.id }}</span>
+            </div>
             {% if p.badge %}
             <span class="status-badge">{{ p.badge }}</span>
             {% endif %}
           </div>
 
-          <div class="card-visual" onclick="openProductModal({{ p.id }})" style="cursor: pointer;" title="Ver especificacoes e avaliacoes">
+          <div class="card-visual" onclick="openProductModal({{ p.id }})" style="cursor: pointer;" title="Inspecionar especificacoes e reviews">
             {% if 'Teclado' in p.name %}
-            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
             {% elif 'Mouse' in p.name %}
-            <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="9"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="9"/><circle cx="12" cy="7" r="1"/></svg>
             {% elif 'Headset' in p.name %}
             <svg viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
             {% elif 'Suporte' in p.name %}
             <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             {% elif 'Dock' in p.name %}
-            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="7" cy="12" r="1"/><circle cx="11" cy="12" r="1"/><line x1="15" y1="12" x2="18" y2="12"/></svg>
             {% else %}
             <svg viewBox="0 0 24 24" fill="none"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
             {% endif %}
           </div>
 
           <div class="card-meta-row">
-            <span class="rating-pill" onclick="openProductModal({{ p.id }})" title="Ver avaliacoes">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <span class="rating-pill" onclick="openProductModal({{ p.id }})" title="Ver avaliacoes de clientes">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
               <span>{{ "%.1f"|format(p.avg_rating) }}</span>
@@ -161,25 +209,33 @@
             </span>
 
             {% if p.stock <= 0 %}
-            <span class="stock-pill out">Esgotado</span>
+            <span class="stock-pill out">ESGOTADO</span>
             {% elif p.stock <= 5 %}
-            <span class="stock-pill low">Restam {{ p.stock }} un.</span>
+            <span class="stock-pill low">RESTAM {{ p.stock }} UN.</span>
             {% else %}
-            <span class="stock-pill">{{ p.stock }} em estoque</span>
+            <span class="stock-pill">{{ p.stock }} EM ESTOQUE</span>
             {% endif %}
           </div>
 
           <h2 class="card-title" onclick="openProductModal({{ p.id }})" style="cursor: pointer;">{{ p.name }}</h2>
           <p class="card-desc">{{ p.description }}</p>
+
+          {% if p.specs %}
+          <div class="card-mini-specs">
+            {% for sp in p.specs.split('|')[:3] %}
+            <span class="mini-spec-tag">{{ sp.strip() }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
         </div>
 
         <div class="card-bottom">
           <div class="price-container">
-            <span class="price-sub">Valor a vista</span>
+            <span class="price-sub">R$ {{ "%.2f"|format(p.price * 0.95)|replace(".", ",") }} no PIX</span>
             <span class="price-value">R$ {{ "%.2f"|format(p.price)|replace(".", ",") }}</span>
           </div>
           <div class="card-actions">
-            <button class="btn-ghost" onclick="openProductModal({{ p.id }})" title="Especificacoes e Reviews">
+            <button class="btn-ghost" onclick="openProductModal({{ p.id }})" title="Ficha Tecnica & Reviews">
               Specs
             </button>
             <button
@@ -203,26 +259,26 @@
 
   <!-- Product Details & Reviews Modal -->
   <div class="modal-overlay" id="productModal" onclick="if(event.target.id==='productModal') closeProductModal()">
-    <div class="modal-box" style="max-width: 620px;">
+    <div class="modal-box" style="max-width: 640px;">
       <div class="modal-head">
         <div>
           <span class="category-tag" id="pmCategory">Categoria</span>
-          <h2 id="pmTitle" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem;">Produto</h2>
+          <h2 id="pmTitle" style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-top: 0.3rem;">Produto</h2>
         </div>
         <button class="btn-close" onclick="closeProductModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <p id="pmDesc" style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.55;"></p>
+        <p id="pmDesc" style="color: var(--text-secondary); font-size: 0.93rem; line-height: 1.6;"></p>
 
-        <div style="margin-top: 1rem;">
-          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim);">Especificacoes Tecnicas</span>
+        <div style="margin-top: 1.15rem;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.06em;">Especificacoes de Engenharia</span>
           <div class="specs-list" id="pmSpecs"></div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 240, 255, 0.04); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin-bottom: 1.5rem;">
           <div>
-            <span style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Preco Unitario</span>
-            <div id="pmPrice" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">R$ 0,00</div>
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Valor Unitario</span>
+            <div id="pmPrice" style="font-family: var(--font-mono); font-size: 1.45rem; font-weight: 800; color: var(--primary);">R$ 0,00</div>
           </div>
           <button class="btn-primary" id="pmAddBtn">
             <span>Adicionar ao Carrinho</span>
@@ -230,23 +286,23 @@
         </div>
 
         <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
-          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.85rem;">Avaliacoes de Engenheiros</h3>
+          <h3 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.85rem;">Avaliacoes Verificadas</h3>
           <div id="pmReviewsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem;"></div>
 
-          <form id="reviewForm" onsubmit="submitProductReview(event)" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
-            <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">Registrar Avaliacao Tecnica</div>
+          <form id="reviewForm" onsubmit="submitProductReview(event)" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-highlight); border-radius: var(--radius-sm); padding: 1.1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--primary);">Publicar Review Tecnico</div>
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.65rem; margin-bottom: 0.65rem;">
               <input type="text" id="revAuthor" class="form-input" placeholder="Seu nome (ex: Guilherme W.)" required minlength="2">
               <select id="revRating" class="form-select" required>
-                <option value="5">5 Estrelas - Excelente</option>
-                <option value="4">4 Estrelas - Muito Bom</option>
-                <option value="3">3 Estrelas - Regular</option>
-                <option value="2">2 Estrelas - Abaixo</option>
-                <option value="1">1 Estrela - Ruim</option>
+                <option value="5">5 ★ - Excelente</option>
+                <option value="4">4 ★ - Muito Bom</option>
+                <option value="3">3 ★ - Regular</option>
+                <option value="2">2 ★ - Abaixo</option>
+                <option value="1">1 ★ - Ruim</option>
               </select>
             </div>
             <div style="display: flex; gap: 0.65rem;">
-              <input type="text" id="revComment" class="form-input" placeholder="Comentario sobre construcao, latencia ou ergonomia..." required minlength="3">
+              <input type="text" id="revComment" class="form-input" placeholder="Analise sobre construcao, switches, latencia ou ergonomia..." required minlength="3">
               <button type="submit" class="btn-primary" style="white-space: nowrap;">Publicar</button>
             </div>
           </form>
@@ -260,7 +316,7 @@
     <aside class="drawer">
       <div class="drawer-header">
         <div class="drawer-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
@@ -269,9 +325,7 @@
         <button class="btn-close" onclick="closeDrawer()">&times;</button>
       </div>
 
-      <div class="drawer-body" id="drawerCartList">
-        <!-- Injetado dinamicamente via JS -->
-      </div>
+      <div class="drawer-body" id="drawerCartList"></div>
 
       <div class="drawer-footer">
         <div class="subtotal-row">
@@ -293,7 +347,7 @@
   <div class="modal-overlay" id="checkoutModal">
     <div class="modal-box" style="max-width: 560px;">
       <div class="modal-head">
-        <h2 style="font-size: 1.15rem; font-weight: 700;">Finalizacao de Compra</h2>
+        <h2 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800;">Finalizacao de Compra</h2>
         <button class="btn-close" onclick="closeCheckoutModal()">&times;</button>
       </div>
 
@@ -313,7 +367,7 @@
 
           <div style="display: grid; grid-template-columns: 1.2fr 2fr; gap: 0.75rem;">
             <div class="form-field">
-              <label class="form-label" for="custZip">CEP (Calculo de Frete)</label>
+              <label class="form-label" for="custZip">CEP (Frete)</label>
               <div class="inline-input-group">
                 <input type="text" id="custZip" class="form-input" placeholder="80010-000" value="80010-000" minlength="8" maxlength="10" onblur="quoteShipping()">
               </div>
@@ -337,13 +391,13 @@
             <div class="form-field">
               <label class="form-label" for="custCoupon">Cupom Promocional</label>
               <div class="inline-input-group">
-                <input type="text" id="custCoupon" class="form-input" placeholder="Ex: DEV10 ou SIDI20" style="text-transform: uppercase;">
+                <input type="text" id="custCoupon" class="form-input" placeholder="DEV10 ou SIDI20" style="text-transform: uppercase;">
                 <button type="button" class="btn-ghost" onclick="applyCoupon()">Aplicar</button>
               </div>
             </div>
           </div>
 
-          <div id="couponFeedback" style="font-size: 0.8rem; margin-bottom: 0.75rem; display: none;"></div>
+          <div id="couponFeedback" style="font-family: var(--font-mono); font-size: 0.78rem; margin-bottom: 0.75rem; display: none;"></div>
 
           <button type="submit" class="btn-checkout" id="submitOrderBtn" style="margin-top: 0.75rem;">
             <span>Efetivar Pedido</span>
@@ -358,7 +412,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>NovaStore Engine v2.0 &copy; 2026 - Desenvolvido para Guilherme Gustavo Weber. Arquitetura FastAPI + SQLite nativo.</p>
+    <p>NOVASTORE ENGINE v2.5 // ARQUITETURA FASTAPI + SQLITE // GUILHERME GUSTAVO WEBER</p>
   </footer>
 
   <script src="/static/app.js"></script>
