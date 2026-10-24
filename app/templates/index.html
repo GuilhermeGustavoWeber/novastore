@@ -240,6 +240,9 @@
           </div>
 
           <div class="card-visual" onclick="openProductModal({{ p.id }})" style="cursor: pointer;" title="Inspecionar especificacoes e reviews">
+            {% if p.image_url %}
+            <img src="{{ p.image_url }}" alt="{{ p.name }}" class="card-img" loading="lazy">
+            {% endif %}
             {% if 'Teclado' in p.name %}
             <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
             {% elif 'Mouse' in p.name %}
@@ -296,7 +299,7 @@
             </button>
             <button
               class="btn"
-              onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})"
+              onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }}, '{{ p.image_url or '' }}')"
               {% if p.stock <= 0 %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}
             >
               <span class="btn-t"><span data-t="No Carrinho +">Adicionar</span></span>
@@ -562,6 +565,9 @@
         <button class="btn-close" onclick="closeProductModal()">&times;</button>
       </div>
       <div class="modal-body">
+        <div class="pm-photo-stage" id="pmPhotoStage" style="display: none;">
+          <img id="pmImage" src="" alt="Foto do Produto">
+        </div>
         <p id="pmDesc" style="color: var(--ink-2); font-size: 0.96rem; line-height: 1.6;"></p>
 
         <div style="margin-top: 1.25rem;">

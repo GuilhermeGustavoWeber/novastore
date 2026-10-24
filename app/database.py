@@ -36,11 +36,13 @@ def init_db() -> None:
             description TEXT NOT NULL,
             stock INTEGER NOT NULL,
             badge TEXT,
-            specs TEXT
+            specs TEXT,
+            image_url TEXT
         );
         """
     )
     _ensure_column(cursor, "products", "specs", "TEXT")
+    _ensure_column(cursor, "products", "image_url", "TEXT")
 
     cursor.execute(
         """
@@ -107,6 +109,15 @@ def init_db() -> None:
         """
     )
 
+    default_images = {
+        "Teclado Mecanico TKL RGB": "/static/images/kb-tkl.jpg",
+        "Mouse Ergonomico Vertical 4000 DPI": "/static/images/mouse-vertical.jpg",
+        "Headset Wireless com Cancelamento Ativo": "/static/images/headset-anc.jpg",
+        "Suporte Articulado a Gas para Monitor": "/static/images/monitor-arm.jpg",
+        "Dock Station USB-C 10 em 1": "/static/images/dock-usbc.jpg",
+        "Desk Mat Cordura 900x400mm": "/static/images/deskmat-cordura.jpg",
+    }
+
     # Seed Products if empty
     cursor.execute("SELECT COUNT(*) as count FROM products;")
     row = cursor.fetchone()
@@ -120,6 +131,7 @@ def init_db() -> None:
                 25,
                 "Mais Vendido",
                 "Formato: TKL (87 teclas) | Switch: Tactile Brown Lubed | Keycaps: PBT Double-Shot | Polling Rate: 1000Hz | Cabo: USB-C Trancado 1.8m",
+                "/static/images/kb-tkl.jpg",
             ),
             (
                 "Mouse Ergonomico Vertical 4000 DPI",
@@ -129,6 +141,7 @@ def init_db() -> None:
                 40,
                 "Destaque",
                 "Angulo Vertical: 57 graus | Sensor: PixArt PAW3212 (ate 4000 DPI) | Bateria: 500mAh Recarregavel USB-C | Conexao: Dongle 2.4G + BT 5.2",
+                "/static/images/mouse-vertical.jpg",
             ),
             (
                 "Headset Wireless com Cancelamento Ativo",
@@ -138,6 +151,7 @@ def init_db() -> None:
                 18,
                 "Premium",
                 "Drivers: 50mm Neodimio | ANC: Hibrido (-38dB) | Autonomia: 40h continuas | Latencia: 20ms Ultra-Low Dongle | Peso: 285g",
+                "/static/images/headset-anc.jpg",
             ),
             (
                 "Suporte Articulado a Gas para Monitor",
@@ -147,6 +161,7 @@ def init_db() -> None:
                 30,
                 None,
                 "Capacidade: 2kg a 9kg | Telas: 17\" a 34\" Ultrawide | VESA: 75x75 e 100x100mm | Fixacao: Morsa ou Furacao | Organizador de cabos integrado",
+                "/static/images/monitor-arm.jpg",
             ),
             (
                 "Dock Station USB-C 10 em 1",
@@ -156,6 +171,7 @@ def init_db() -> None:
                 15,
                 "Novo",
                 "Video: Dual HDMI 4K@60Hz | Rede: RJ45 Gigabit (1000Mbps) | Energia: USB-C PD 100W Pass-Through | Dados: 3x USB 3.0 (5Gbps) + SD/MicroSD",
+                "/static/images/dock-usbc.jpg",
             ),
             (
                 "Desk Mat Cordura 900x400mm",
@@ -165,17 +181,18 @@ def init_db() -> None:
                 50,
                 None,
                 "Dimensoes: 900 x 400 x 4mm | Tecido: Cordura Balistica Impermeavel | Base: Borracha Natural Antiderrapante | Borda: Costura Low-Profile",
+                "/static/images/deskmat-cordura.jpg",
             ),
         ]
         cursor.executemany(
             """
-            INSERT INTO products (name, category, price, description, stock, badge, specs)
-            VALUES (?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO products (name, category, price, description, stock, badge, specs, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             """,
             seed_products,
         )
     else:
-        # Ensure existing products have specs populated
+        # Ensure existing products have specs and image_url populated
         default_specs = {
             "Teclado Mecanico TKL RGB": "Formato: TKL (87 teclas) | Switch: Tactile Brown Lubed | Keycaps: PBT Double-Shot | Polling Rate: 1000Hz",
             "Mouse Ergonomico Vertical 4000 DPI": "Angulo Vertical: 57 graus | Sensor: PixArt 4000 DPI | Bateria: Recarregavel USB-C | Conexao: 2.4G + BT 5.2",
@@ -188,6 +205,11 @@ def init_db() -> None:
             cursor.execute(
                 "UPDATE products SET specs = ? WHERE name = ? AND (specs IS NULL OR specs = '');",
                 (spec_text, p_name),
+            )
+        for p_name, img_url in default_images.items():
+            cursor.execute(
+                "UPDATE products SET image_url = ? WHERE name = ? AND (image_url IS NULL OR image_url = '');",
+                (img_url, p_name),
             )
 
     # Seed Coupons if empty

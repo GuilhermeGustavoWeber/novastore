@@ -14,6 +14,7 @@ class ProductSchema(BaseModel):
     stock: int
     badge: Optional[str] = None
     specs: Optional[str] = None
+    image_url: Optional[str] = None
     avg_rating: float = 0.0
     review_count: int = 0
 
@@ -26,6 +27,7 @@ class ProductCreateRequest(BaseModel):
     stock: int = Field(ge=0)
     badge: Optional[str] = None
     specs: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class ProductUpdateRequest(BaseModel):
@@ -36,6 +38,7 @@ class ProductUpdateRequest(BaseModel):
     stock: Optional[int] = Field(default=None, ge=0)
     badge: Optional[str] = None
     specs: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class ReviewSchema(BaseModel):

@@ -58,11 +58,17 @@ function renderCartUI() {
     .map((item, idx) => {
       const subtotal = item.price * item.quantity;
       total += subtotal;
+      const thumbHtml = item.image_url
+        ? `<img src="${item.image_url}" alt="${item.name}" class="cart-thumb">`
+        : "";
       return `
         <div class="cart-item">
-          <div class="item-info">
-            <div class="item-name">${item.name}</div>
-            <div class="item-price">R$ ${item.price.toFixed(2).replace(".", ",")}</div>
+          <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
+            ${thumbHtml}
+            <div class="item-info">
+              <div class="item-name">${item.name}</div>
+              <div class="item-price">R$ ${item.price.toFixed(2).replace(".", ",")}</div>
+            </div>
           </div>
           <div class="item-controls">
             <button class="qty-btn" onclick="updateQty(${idx}, -1)">&minus;</button>
@@ -88,12 +94,15 @@ function renderCartUI() {
   }
 }
 
-function addToCart(id, name, price) {
+function addToCart(id, name, price, imageUrl = "") {
   const existing = cart.find((i) => i.id === id);
   if (existing) {
     existing.quantity += 1;
+    if (imageUrl && !existing.image_url) {
+      existing.image_url = imageUrl;
+    }
   } else {
-    cart.push({ id, name, price, quantity: 1 });
+    cart.push({ id, name, price, quantity: 1, image_url: imageUrl });
   }
   saveCart();
   showToast(`Item "${name}" adicionado ao carrinho.`);
@@ -155,6 +164,18 @@ async function openProductModal(productId) {
     document.getElementById("pmDesc").textContent = prod.description;
     document.getElementById("pmPrice").textContent = `R$ ${prod.price.toFixed(2).replace(".", ",")}`;
 
+    const photoStage = document.getElementById("pmPhotoStage");
+    const pmImage = document.getElementById("pmImage");
+    if (photoStage && pmImage) {
+      if (prod.image_url) {
+        pmImage.src = prod.image_url;
+        pmImage.alt = prod.name;
+        photoStage.style.display = "block";
+      } else {
+        photoStage.style.display = "none";
+      }
+    }
+
     const specsEl = document.getElementById("pmSpecs");
     if (prod.specs) {
       specsEl.innerHTML = prod.specs
@@ -173,7 +194,7 @@ async function openProductModal(productId) {
       addBtn.disabled = false;
       addBtn.innerHTML = `<span>Adicionar ao Carrinho (${prod.stock} disp.)</span>`;
       addBtn.onclick = () => {
-        addToCart(prod.id, prod.name, prod.price);
+        addToCart(prod.id, prod.name, prod.price, prod.image_url || "");
         closeProductModal();
       };
     }
@@ -593,6 +614,7 @@ async function saveProductQuick(productId) {
 
 async function createNewProduct(event) {
   event.preventDefault();
+  const imgInput = document.getElementById("newProdImage");
   const payload = {
     name: document.getElementById("newProdName").value.trim(),
     category: document.getElementById("newProdCat").value.trim(),
@@ -601,6 +623,7 @@ async function createNewProduct(event) {
     badge: document.getElementById("newProdBadge").value.trim() || null,
     description: document.getElementById("newProdDesc").value.trim(),
     specs: document.getElementById("newProdSpecs").value.trim() || null,
+    image_url: imgInput && imgInput.value.trim() ? imgInput.value.trim() : null,
   };
   try {
     const res = await fetch("/api/admin/products", {

@@ -151,8 +151,15 @@
             <tr>
               <td style="color: var(--muted); font-family: var(--f-mono);">#0{{ p.id }}</td>
               <td>
-                <div style="font-weight: 700;">{{ p.name }}</div>
-                {% if p.badge %}<span class="status-badge" style="font-size: 10px; margin-top: 3px;">{{ p.badge }}</span>{% endif %}
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  {% if p.image_url %}
+                  <img src="{{ p.image_url }}" alt="{{ p.name }}" class="admin-thumb">
+                  {% endif %}
+                  <div>
+                    <div style="font-weight: 700;">{{ p.name }}</div>
+                    {% if p.badge %}<span class="status-badge" style="font-size: 10px; margin-top: 3px;">{{ p.badge }}</span>{% endif %}
+                  </div>
+                </div>
               </td>
               <td><span class="category-tag">{{ p.category }}</span></td>
               <td>
@@ -198,6 +205,7 @@
           <input type="number" step="0.01" id="newProdPrice" class="form-input" placeholder="Preco (ex: 399.90)" required min="0.01">
           <input type="number" id="newProdStock" class="form-input" placeholder="Estoque Inicial" required min="0">
           <input type="text" id="newProdBadge" class="form-input" placeholder="Badge opcional (ex: Novo)">
+          <input type="text" id="newProdImage" class="form-input" placeholder="URL da Foto (ex: /static/images/kb-tkl.jpg)">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center;">
           <input type="text" id="newProdDesc" class="form-input" placeholder="Descricao comercial do produto..." required minlength="5">

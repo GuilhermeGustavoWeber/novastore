@@ -943,11 +943,11 @@ h1, h2, h3, h4 {
   background: var(--peach);
 }
 
-/* Recessed Tactile Stage with Potadot Icon Badge */
+/* Recessed Tactile Stage with High-Res Studio Photo & Potadot Icon Badge */
 .card-visual {
-  height: 148px;
+  height: 215px;
   border-radius: 22px;
-  background-color: var(--paper);
+  background-color: var(--paper-2);
   background-image: radial-gradient(rgba(10, 40, 45, .07) 1.2px, transparent 1.6px);
   background-size: 20px 20px;
   box-shadow: var(--shadow-press);
@@ -959,7 +959,34 @@ h1, h2, h3, h4 {
   transition: var(--transition);
 }
 
-/* Subtle glowing orb behind product icon */
+.card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  transition: transform .65s var(--ease), filter .5s var(--ease);
+  filter: contrast(1.04) saturate(1.02);
+}
+
+.card:hover .card-img {
+  transform: scale(1.07);
+}
+
+/* Editorial vignette + specular rim over product photo */
+.card-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(3, 10, 12, 0.05) 45%, rgba(3, 10, 12, 0.62) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Subtle glowing orb behind fallback icon */
 .card-visual::before {
   content: "";
   position: absolute;
@@ -974,34 +1001,75 @@ h1, h2, h3, h4 {
   transform: scale(1.35);
 }
 
-/* Potadot .c-card .ico style inside visual stage */
+/* Potadot .c-card .ico style floating badge in bottom-right of photo */
 .card-visual svg {
-  position: relative;
-  z-index: 1;
-  width: 64px;
-  height: 64px;
-  padding: 15px;
-  border-radius: 20px;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 14px;
   background: linear-gradient(145deg, #58D183, var(--green) 55%, #2E9A52);
   color: #ffffff;
   stroke: #ffffff;
-  stroke-width: 1.8;
-  box-shadow: 0 14px 26px -10px rgba(61, 182, 99, 0.75), inset 0 1px rgba(255, 255, 255, 0.45);
+  stroke-width: 1.9;
+  box-shadow: 0 10px 22px -6px rgba(3, 10, 12, 0.75), inset 0 1px rgba(255, 255, 255, 0.45);
   transition: transform .55s var(--ease), box-shadow .55s var(--ease);
 }
 
 .card[data-category="Audio"] .card-visual svg {
   background: linear-gradient(145deg, #1C5560, var(--teal) 65%);
-  box-shadow: 0 14px 26px -10px rgba(10, 40, 45, 0.65), inset 0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 22px -6px rgba(3, 10, 12, 0.75), inset 0 1px rgba(255, 255, 255, 0.3);
 }
 
 .card[data-category="Setup"] .card-visual svg {
   background: linear-gradient(145deg, #D09A68, var(--brown) 55%, #8C5630);
-  box-shadow: 0 14px 26px -10px rgba(176, 112, 64, 0.65), inset 0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 22px -6px rgba(3, 10, 12, 0.75), inset 0 1px rgba(255, 255, 255, 0.4);
 }
 
 .card:hover .card-visual svg {
-  transform: rotate(-7deg) scale(1.08);
+  transform: rotate(-7deg) scale(1.1);
+}
+
+/* Product Modal Photo Stage & Cart/Admin Thumbnails */
+.pm-photo-stage {
+  width: 100%;
+  height: 240px;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow-press);
+  margin-bottom: 1.25rem;
+  position: relative;
+  background: var(--paper-2);
+}
+
+.pm-photo-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cart-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
+  background: var(--paper-2);
+}
+
+.admin-thumb {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
+  background: var(--paper-2);
 }
 
 /* Card Meta: Rating & Stock */

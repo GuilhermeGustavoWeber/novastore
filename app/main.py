@@ -452,8 +452,8 @@ def create_product_endpoint(payload: ProductCreateRequest) -> ProductSchema:
     cursor = conn.cursor()
     cursor.execute(
         """
-        INSERT INTO products (name, category, price, description, stock, badge, specs)
-        VALUES (?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO products (name, category, price, description, stock, badge, specs, image_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         """,
         (
             payload.name.strip(),
@@ -463,6 +463,7 @@ def create_product_endpoint(payload: ProductCreateRequest) -> ProductSchema:
             payload.stock,
             payload.badge.strip() if payload.badge else None,
             payload.specs.strip() if payload.specs else None,
+            payload.image_url.strip() if payload.image_url else None,
         ),
     )
     new_id = int(cursor.lastrowid or 0)
@@ -487,16 +488,17 @@ def update_product_endpoint(product_id: int, payload: ProductUpdateRequest) -> P
     stock = payload.stock if payload.stock is not None else existing["stock"]
     badge = payload.badge if payload.badge is not None else existing.get("badge")
     specs = payload.specs if payload.specs is not None else existing.get("specs")
+    image_url = payload.image_url if payload.image_url is not None else existing.get("image_url")
 
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
         """
         UPDATE products
-        SET name = ?, category = ?, price = ?, description = ?, stock = ?, badge = ?, specs = ?
+        SET name = ?, category = ?, price = ?, description = ?, stock = ?, badge = ?, specs = ?, image_url = ?
         WHERE id = ?;
         """,
-        (name, category, price, description, stock, badge, specs, product_id),
+        (name, category, price, description, stock, badge, specs, image_url, product_id),
     )
     conn.commit()
     conn.close()
