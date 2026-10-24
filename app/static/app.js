@@ -709,6 +709,16 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCartUI();
   syncFavoritesUI();
 
+  // Global cursor-reactive ambient aurora on background blueprint stage
+  window.addEventListener(
+    "pointermove",
+    (e) => {
+      document.documentElement.style.setProperty("--page-mx", `${e.clientX}px`);
+      document.documentElement.style.setProperty("--page-my", `${e.clientY}px`);
+    },
+    { passive: true }
+  );
+
   // Potadot interactive spotlight tracking on tactile cards
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("pointermove", (e) => {
