@@ -83,7 +83,7 @@
               <span style="color: var(--muted); font-size: 0.84rem; margin-left: 0.6rem;">{{ order.created_at }}</span>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
-              <span class="status-badge" {% if order.status == 'Cancelado' %}style="background: #fde8ec; color: var(--danger);"{% endif %}>
+              <span class="status-badge" {% if order.status == 'Cancelado' %}style="background: rgba(244, 63, 94, 0.16); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3);"{% endif %}>
                 {{ order.status }}
               </span>
               <a href="/order/{{ order.order_id }}" class="btn-ghost">Ver Recibo</a>
@@ -91,7 +91,7 @@
           </div>
 
           {% if order.status == 'Cancelado' %}
-          <div style="margin: 1.25rem 0; padding: 14px 18px; background: #fde8ec; border-radius: 16px; color: var(--danger); font-size: 0.9rem; font-weight: 600;">
+          <div style="margin: 1.25rem 0; padding: 14px 18px; background: rgba(244, 63, 94, 0.14); border: 1px solid rgba(244, 63, 94, 0.28); border-radius: 16px; color: #fb7185; font-size: 0.9rem; font-weight: 600;">
             Este pedido foi cancelado e o estoque dos itens foi estornado automaticamente.
           </div>
           {% else %}
