@@ -2,7 +2,6 @@
    NOVASTORE v3.0 - POTADOT TACTILE SOFT-NEUMORPHIC & EDITORIAL TEAL SYSTEM
    Engineered from potadot.com.my CSS Architecture
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
 
 :root {
   /* Potadot Dark Mode Core Palette (Default) */
@@ -169,6 +168,7 @@ html[data-theme="light"] body::before {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  contain: strict;
 }
 
 .bg-orb {
@@ -177,6 +177,8 @@ html[data-theme="light"] body::before {
   background: var(--paper);
   box-shadow: var(--orb-shadow);
   opacity: 0.72;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
   animation: bgOrbFloat 18s ease-in-out infinite alternate;
 }
 
@@ -990,7 +992,7 @@ h1, h2, h3, h4 {
    ========================================================================== */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 28px;
 }
 
@@ -1445,14 +1447,23 @@ h1, h2, h3, h4 {
   border: 0;
   box-shadow: var(--shadow-press);
   color: var(--ink);
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: grid;
   place-items: center;
   font-weight: 700;
+  font-size: 1.1rem;
   transition: var(--transition);
+  touch-action: manipulation;
+  position: relative;
+}
+
+.qty-btn::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
 }
 
 .qty-btn:hover {
@@ -2354,12 +2365,72 @@ h1, h2, h3, h4 {
   color: var(--on-dark-muted);
 }
 
+/* ==========================================================================
+   RESPONSIVE DESIGN ADAPTATIONS & ACCESSIBILITY GUARDS
+   ========================================================================== */
+
 @media (max-width: 920px) {
   .hero-grid, .serve-grid, .faq-grid { grid-template-columns: 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
-  .controls-bar { flex-direction: column; align-items: stretch; }
+  .controls-bar { flex-direction: column; align-items: stretch; gap: 14px; }
   .search-box { width: 100%; }
+  .navbar { padding: 8px 14px; gap: 10px; }
+  .nav-link { font-size: 0.85rem; padding: 7px 12px; }
 }
+
+@media (max-width: 680px) {
+  .navbar {
+    width: calc(100% - 20px);
+    margin: 8px auto 0;
+    padding: 6px 12px;
+  }
+  .badge-pill { display: none; }
+  .nav-actions { gap: 4px; }
+  .nav-link:not(.active) { display: none; }
+  .logo-text { font-size: 1.2rem; }
+  .logo-icon { width: 32px; height: 32px; }
+  .cart-toggle-btn { padding: 8px 14px; font-size: 0.85rem; }
+  .cart-toggle-btn span:first-child { display: none; }
+  .cart-toggle-btn::before {
+    content: "";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .modal-overlay { padding: 0.75rem; }
+  .modal-box { border-radius: 24px; max-height: 94vh; }
+  .modal-head { padding: 18px 20px; }
+  .modal-body { padding: 20px; }
+}
+
 @media (max-width: 600px) {
   .foot-grid { grid-template-columns: 1fr; }
+  .drawer {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+  }
+}
+
+/* WCAG 2.2 AA - Reduced Motion Support for Vestibular Disorders */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bg-orb, .orb, .logo-icon, .card, .btn-pill {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
