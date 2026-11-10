@@ -2,16 +2,18 @@
 Database access layer using SQLite with schema migration and default seed data.
 """
 from datetime import datetime
+import os
 from pathlib import Path
 import sqlite3
 from typing import Any, Dict, List, Optional, Tuple
 
-DB_PATH = Path(__file__).resolve().parent.parent / "store.db"
+DB_PATH = Path(os.getenv("STORE_DB_PATH", str(Path(__file__).resolve().parent.parent / "store.db")))
 
 
 def get_db_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON;")
     return conn
 
 
@@ -25,6 +27,8 @@ def _ensure_column(cursor: sqlite3.Cursor, table: str, column: str, col_def: str
 def init_db() -> None:
     conn = get_db_connection()
     cursor = conn.cursor()
+    cursor.execute("PRAGMA journal_mode = WAL;")
+    cursor.execute("PRAGMA synchronous = NORMAL;")
 
     cursor.execute(
         """
@@ -108,6 +112,13 @@ def init_db() -> None:
         );
         """
     )
+
+    # Performance Indexes
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews (product_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items (order_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_customer_email ON orders (customer_email);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders (created_at DESC);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_category ON products (category);")
 
     default_images = {
         "Teclado Mecanico TKL RGB": "/static/images/kb-tkl.jpg",

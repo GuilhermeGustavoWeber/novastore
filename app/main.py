@@ -349,9 +349,14 @@ def create_order(payload: CheckoutRequest) -> OrderResponse:
                 (order_id, oi.product_id, oi.product_name, oi.quantity, oi.unit_price, oi.subtotal),
             )
             cursor.execute(
-                "UPDATE products SET stock = stock - ? WHERE id = ?;",
-                (oi.quantity, oi.product_id),
+                "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?;",
+                (oi.quantity, oi.product_id, oi.quantity),
             )
+            if cursor.rowcount == 0:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Estoque insuficiente ou esgotado para '{oi.product_name}' durante o fechamento concorrente.",
+                )
 
         conn.commit()
     except HTTPException:
@@ -429,9 +434,14 @@ def update_order_status_endpoint(order_id: str, payload: OrderStatusUpdateReques
         elif existing.status == "Cancelado" and payload.status != "Cancelado":
             for item in existing.items:
                 cursor.execute(
-                    "UPDATE products SET stock = MAX(0, stock - ?) WHERE id = ?;",
-                    (item.quantity, item.product_id),
+                    "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?;",
+                    (item.quantity, item.product_id, item.quantity),
                 )
+                if cursor.rowcount == 0:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Não é possível reabrir pedido: estoque insuficiente para '{item.product_name}'.",
+                    )
 
         cursor.execute(
             "UPDATE orders SET status = ? WHERE id = ?;",

@@ -1,4 +1,14 @@
 // NovaStore v3.0 - State Management & Client Logic
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 let cart = JSON.parse(localStorage.getItem("novastore_cart") || "[]");
 let favorites = JSON.parse(localStorage.getItem("novastore_favs") || "[]");
 let currentCategory = "todos";
@@ -59,14 +69,14 @@ function renderCartUI() {
       const subtotal = item.price * item.quantity;
       total += subtotal;
       const thumbHtml = item.image_url
-        ? `<img src="${item.image_url}" alt="${item.name}" class="cart-thumb">`
+        ? `<img src="${encodeURI(item.image_url)}" alt="${escapeHtml(item.name)}" class="cart-thumb">`
         : "";
       return `
         <div class="cart-item">
           <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
             ${thumbHtml}
             <div class="item-info">
-              <div class="item-name">${item.name}</div>
+              <div class="item-name">${escapeHtml(item.name)}</div>
               <div class="item-price">R$ ${item.price.toFixed(2).replace(".", ",")}</div>
             </div>
           </div>
@@ -218,10 +228,10 @@ function renderReviewsList(reviews) {
       (r) => `
       <div class="review-item">
         <div class="review-head">
-          <strong style="color: var(--text-main);">${r.author_name}</strong>
-          <span style="color: #fbbf24; font-weight: 700;">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span>
+          <strong style="color: var(--text-main);">${escapeHtml(r.author_name)}</strong>
+          <span style="color: #fbbf24; font-weight: 700;">${"★".repeat(Math.max(1, Math.min(5, r.rating || 5)))}${"☆".repeat(Math.max(0, 5 - (r.rating || 5)))}</span>
         </div>
-        <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.45;">${r.comment}</p>
+        <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.45;">${escapeHtml(r.comment)}</p>
       </div>
     `
     )
@@ -351,7 +361,7 @@ function refreshCheckoutTotals() {
     const sub = i.price * i.quantity;
     itemsHtml += `
       <div style="display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 0.4rem;">
-        <span style="color: var(--ink-2);">${i.name} &times; ${i.quantity}</span>
+        <span style="color: var(--ink-2);">${escapeHtml(i.name)} &times; ${i.quantity}</span>
         <span style="font-weight: 700; color: var(--ink);">R$ ${sub.toFixed(2).replace(".", ",")}</span>
       </div>
     `;
@@ -730,5 +740,20 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.setProperty("--mx", "-999px");
       card.style.setProperty("--my", "-999px");
     });
+  });
+
+  // Multi-tab Cart & Favorites Synchronization
+  window.addEventListener("storage", (e) => {
+    if (e.key === "novastore_cart") {
+      try {
+        cart = JSON.parse(e.newValue || "[]");
+        renderCartUI();
+      } catch (_) {}
+    } else if (e.key === "novastore_favs") {
+      try {
+        favorites = JSON.parse(e.newValue || "[]");
+        syncFavoritesUI();
+      } catch (_) {}
+    }
   });
 });

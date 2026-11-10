@@ -180,6 +180,65 @@ class NovaStoreEvolutionTests(unittest.TestCase):
         del_res = self.client.delete(f"/api/admin/products/{prod_id}")
         self.assertEqual(del_res.status_code, 200)
 
+    def test_05_atomic_stock_concurrency_guard(self) -> None:
+        p1 = self.client.get("/api/products/1").json()
+        current_stock = p1["stock"]
+
+        # Attempt to order more than existing stock
+        fail_res = self.client.post(
+            "/api/checkout",
+            json={
+                "customer_name": "Test Excess",
+                "customer_email": "excess@sidi.dev",
+                "customer_address": "Rua Teste, 100",
+                "payment_method": "pix",
+                "items": [{"product_id": 1, "quantity": current_stock + 999}],
+            },
+        )
+        self.assertEqual(fail_res.status_code, 400)
+        self.assertIn("Estoque insuficiente", fail_res.json()["detail"])
+
+    def test_06_database_wal_and_foreign_keys(self) -> None:
+        import sqlite3
+        from app.database import get_db_connection
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Verify Foreign Keys are active
+        cursor.execute("PRAGMA foreign_keys;")
+        fk_val = cursor.fetchone()[0]
+        self.assertEqual(fk_val, 1)
+
+        # Attempting to violate FK constraint must fail
+        with self.assertRaises(sqlite3.IntegrityError):
+            cursor.execute(
+                "INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, subtotal) VALUES (?, ?, ?, ?, ?, ?);",
+                ("ORD-NONEXISTENT", 99999, "Fake Item", 1, 10.0, 10.0),
+            )
+            conn.commit()
+
+        conn.close()
+
+    def test_07_xss_input_safety(self) -> None:
+        xss_comment = "<script>alert('xss')</script> Excelente acabamento."
+        res = self.client.post(
+            "/api/products/1/reviews",
+            json={
+                "author_name": "<b onmouseover=alert(1)>Hacker</b>",
+                "rating": 5,
+                "comment": xss_comment,
+            },
+        )
+        self.assertEqual(res.status_code, 201)
+        review_id = res.json()["id"]
+
+        from app.database import get_db_connection
+        conn = get_db_connection()
+        conn.execute("DELETE FROM reviews WHERE id = ?;", (review_id,))
+        conn.commit()
+        conn.close()
+
 
 if __name__ == "__main__":
     unittest.main()
