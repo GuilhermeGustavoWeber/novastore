@@ -2,6 +2,11 @@
 End-to-end integration test suite covering the 4 evolution fronts of NovaStore v2.0.
 """
 import unittest
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", message=".*httpx.*")
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -238,6 +243,80 @@ class NovaStoreEvolutionTests(unittest.TestCase):
         conn.execute("DELETE FROM reviews WHERE id = ?;", (review_id,))
         conn.commit()
         conn.close()
+
+    def test_08_invalid_coupon_code(self) -> None:
+        res = self.client.post(
+            "/api/coupons/validate",
+            json={"code": "COUPON_INEXISTENTE_999", "subtotal": 150.0},
+        )
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertFalse(data["valid"])
+        self.assertEqual(data["discount_amount"], 0.0)
+
+    def test_09_coupon_minimum_subtotal_failure(self) -> None:
+        res = self.client.post(
+            "/api/coupons/validate",
+            json={"code": "PRO20", "subtotal": 5.0},
+        )
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertFalse(data["valid"])
+
+    def test_10_shipping_quote_options(self) -> None:
+        res = self.client.post(
+            "/api/shipping/quote",
+            json={"zip_code": "01310-100", "subtotal": 250.0},
+        )
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("cost", data)
+        self.assertIn("region", data)
+        self.assertIn("estimated_days", data)
+
+    def test_11_categories_endpoint(self) -> None:
+        res = self.client.get("/api/categories")
+        self.assertEqual(res.status_code, 200)
+        cats = res.json()
+        self.assertIsInstance(cats, list)
+        self.assertGreater(len(cats), 0)
+
+    def test_12_admin_metrics_summary(self) -> None:
+        res = self.client.get("/api/admin/metrics")
+        self.assertEqual(res.status_code, 200)
+        metrics = res.json()
+        self.assertIn("total_revenue", metrics)
+        self.assertIn("total_orders", metrics)
+
+    def test_13_checkout_payload_validation(self) -> None:
+        res = self.client.post(
+            "/api/checkout",
+            json={
+                "customer_name": "Teste Falha",
+                "customer_email": "falha@sidi.dev",
+                "customer_address": "Rua Nula, 0",
+                "payment_method": "pix",
+                "items": [],
+            },
+        )
+        self.assertIn(res.status_code, (400, 422))
+
+    def test_14_admin_coupons_management(self) -> None:
+        res = self.client.get("/api/admin/coupons")
+        self.assertEqual(res.status_code, 200)
+        coupons = res.json()
+        self.assertIsInstance(coupons, list)
+
+    def test_15_order_search_endpoint(self) -> None:
+        res = self.client.get("/api/orders/search?q=ORD")
+        self.assertEqual(res.status_code, 200)
+        self.assertIsInstance(res.json(), list)
+
+    def test_16_html_routes_render(self) -> None:
+        for route in ("/", "/track", "/admin"):
+            res = self.client.get(route)
+            self.assertEqual(res.status_code, 200)
+            self.assertIn("text/html", res.headers.get("content-type", ""))
 
 
 if __name__ == "__main__":

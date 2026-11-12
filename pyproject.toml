@@ -15,6 +15,16 @@ dependencies = [
 [project.scripts]
 store-app = "store_app:main"
 
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+]
+
+[tool.mypy]
+packages = ["app"]
+check_untyped_defs = true
+ignore_missing_imports = true
+
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
 build-backend = "uv_build"
